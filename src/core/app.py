@@ -8,7 +8,7 @@ class TEACH(QMainWindow):
     def __init__(self):
         """Initialisiert das Hauptfenster."""
         super().__init__()
-        self.setWindowTitle("T.E.A.C.H. - Tolles Einfaches Adaptives Computer Hilfesystem")
+        self.setWindowTitle("T.E.A.C.H. - Toll Ein Anderes Chaotisches Hilfeprogramm")
         self.setGeometry(100, 100, 1024, 768)
         
         # Hauptwidget und Layout
