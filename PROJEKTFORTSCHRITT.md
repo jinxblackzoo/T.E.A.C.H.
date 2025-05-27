@@ -11,12 +11,18 @@
 - [x] Technologie-Stack festlegen
 - [x] Grundlegende Dokumentation
 - [x] Verzeichnisstruktur anlegen
-- [x] Kernklassen (Module, App) implementieren
+- [x] Kernklassen und Programmstruktur (App, Module, Manager) in Mindmaps festgelegt
+- [x] Mindmap-Bereinigung (Kompatibilität Freeplane/Freemind)
 
 ## 🔄 In Arbeit
-- [ ] Modul-Schnittstellen finalisieren
-- [ ] Beispielmodul erstellen
-- [ ] Hauptmenü implementieren
+- [ ] Hauptfenster und Navigation (TEACH, ohne Module) implementieren
+- [ ] Modul-Schnittstellen und Basisklassen finalisieren
+- [ ] Module Schritt für Schritt einbinden
+- [ ] Beispielmodul anlegen und testen
+- [ ] Automatisierte Tests für Kernlogik
+- [ ] Technische Dokumentation vervollständigen
+- [ ] UI/UX-Design abstimmen
+- [ ] README und Entwicklerdokumentation aktualisieren
 
 ## 🤖 KI-Integration
 
