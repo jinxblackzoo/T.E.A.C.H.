@@ -16,93 +16,107 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         self.stack = QStackedWidget()  # Gestapeltes Widget für Menüführung
         self.setCentralWidget(self.stack)  # Stack ist das Zentral-Widget
 
-        # Hauptmenü-Seite (wie KLAR)
+        # Hauptmenü-Seite gemäß .mm-Vorgabe
         self.menu_page = QWidget()  # Widget für das Hauptmenü
         menu_layout = QVBoxLayout(self.menu_page)  # Vertikales Layout für das Hauptmenü
         menu_layout.setAlignment(Qt.AlignCenter)  # Zentriere alles vertikal und horizontal
-        # Begrüßung oben
-        welcome_label = QLabel("Willkommen bei T.E.A.C.H.")  # Begrüßung
+
+        # Begrüßungstext
+        welcome_label = QLabel("Willkommen bei T.E.A.C.H.")  # Überschrift
         welcome_label.setAlignment(Qt.AlignCenter)  # Zentriert
-        welcome_label.setStyleSheet("font-size: 28px; font-weight: bold; margin: 24px;")
+        welcome_label.setStyleSheet("font-size: 28px; font-weight: bold; margin: 24px;")  # Groß und prominent
         menu_layout.addWidget(welcome_label)
         subtitle_label = QLabel("Toll ein anderes chaotisches Hilfeprogramm")  # Untertitel
         subtitle_label.setAlignment(Qt.AlignCenter)
-        subtitle_label.setStyleSheet("font-size: 18px; margin-bottom: 36px;")
+        subtitle_label.setStyleSheet("font-size: 18px; margin-bottom: 36px;")  # Stil wie besprochen
         menu_layout.addWidget(subtitle_label)
-        # Große, übersichtliche Buttons für die Menüpunkte
-        settings_btn = QPushButton("Einstellungen")
-        settings_btn.setMinimumHeight(48)
-        settings_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")
-        menu_layout.addWidget(settings_btn)
-        reporting_btn = QPushButton("Berichte")
-        reporting_btn.setMinimumHeight(48)
-        reporting_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")
-        menu_layout.addWidget(reporting_btn)
-        modules_btn = QPushButton("Module")
-        modules_btn.setMinimumHeight(48)
-        modules_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")
-        menu_layout.addWidget(modules_btn)
-        menu_layout.addStretch(1)  # Abstand nach unten
 
-        # Einstellungen-Seite
-        self.settings_page = QWidget()
-        settings_layout = QVBoxLayout(self.settings_page)
-        settings_layout.setAlignment(Qt.AlignCenter)
-        settings_label = QLabel("Einstellungen")
+        # Drei Hauptmenü-Buttons gemäß .mm:
+        # 1. Einstellungen
+        settings_btn = QPushButton("Einstellungen")  # Button für Einstellungen
+        settings_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
+        settings_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        menu_layout.addWidget(settings_btn)
+        # 2. Reporting
+        reporting_btn = QPushButton("Reporting")  # Button für Reporting
+        reporting_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
+        reporting_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        menu_layout.addWidget(reporting_btn)
+        # 3. Module
+        modules_btn = QPushButton("Module")  # Button für Module
+        modules_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
+        modules_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        menu_layout.addWidget(modules_btn)
+        menu_layout.addStretch(1)  # Abstand nach unten für ein aufgeräumtes Layout
+
+
+        # Einstellungen-Seite 
+        self.settings_page = QWidget()  # Widget für die Einstellungen-Seite
+        settings_layout = QVBoxLayout(self.settings_page)  # Vertikales Layout für Einstellungen
+        settings_layout.setAlignment(Qt.AlignCenter)  # Zentriert alles
+        # Überschrift für Einstellungen
+        settings_label = QLabel("Einstellungen")  # Überschrift
         settings_label.setAlignment(Qt.AlignCenter)
         settings_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
         settings_layout.addWidget(settings_label)
-        general_btn = QPushButton("Allgemein")
-        general_btn.setMinimumHeight(40)
-        general_btn.setStyleSheet("font-size: 16px; margin: 8px 0;")
-        settings_layout.addWidget(general_btn)
-        user_btn = QPushButton("Benutzer")
-        user_btn.setMinimumHeight(40)
-        user_btn.setStyleSheet("font-size: 16px; margin: 8px 0;")
-        settings_layout.addWidget(user_btn)
-        back_btn = QPushButton("Zurück")
-        back_btn.setMinimumHeight(40)
-        back_btn.setStyleSheet("font-size: 16px; margin: 24px 0;")
-        settings_layout.addWidget(back_btn)
+        # Button für KI-Einstellungen (führt zu KI-Einstellungen-Seite)
+        ai_settings_btn = QPushButton("KI-Einstellungen")  # Button für KI-Einstellungen
+        ai_settings_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
+        ai_settings_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        settings_layout.addWidget(ai_settings_btn)
+        # Zurück-Button zum Hauptmenü
+        back_btn_settings = QPushButton("Zurück zum Hauptmenü")  # Zurück-Button
+        back_btn_settings.setMinimumHeight(48)  # Einheitliche Mindesthöhe
+        back_btn_settings.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        settings_layout.addWidget(back_btn_settings)
+        # KI-Einstellungen-Seite (Platzhalter für spätere Untermenüs)
+        self.ai_settings_page = QWidget()
+        ai_settings_layout = QVBoxLayout(self.ai_settings_page)
+        ai_settings_layout.setAlignment(Qt.AlignCenter)
+        ai_settings_label = QLabel("KI-Einstellungen")
+        ai_settings_label.setAlignment(Qt.AlignCenter)
+        ai_settings_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        ai_settings_layout.addWidget(ai_settings_label)
+        # Zurück-Button zu Einstellungen
+        back_btn_ai = QPushButton("Zurück zu Einstellungen")
+        back_btn_ai.setMinimumHeight(48)
+        back_btn_ai.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        ai_settings_layout.addWidget(back_btn_ai)
+        # Seiten zum Stack hinzufügen
+        self.stack.addWidget(self.menu_page)
+        self.stack.addWidget(self.settings_page)
+        self.stack.addWidget(self.ai_settings_page)
+        # Navigation: Buttons verbinden
+        settings_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.settings_page))
+        ai_settings_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.ai_settings_page))
+        back_btn_settings.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
+        back_btn_ai.clicked.connect(lambda: self.stack.setCurrentWidget(self.settings_page))
 
-        # Berichte-Seite
-        self.reporting_page = QWidget()
-        reporting_layout = QVBoxLayout(self.reporting_page)
-        reporting_layout.setAlignment(Qt.AlignCenter)
-        reporting_label = QLabel("Berichte")
+        # Reporting-Seite gemäß .mm-Vorgabe
+        self.reporting_page = QWidget()  # Widget für das Reporting-Menü
+        reporting_layout = QVBoxLayout(self.reporting_page)  # Vertikales Layout für Reporting
+        reporting_layout.setAlignment(Qt.AlignCenter)  # Zentriert alles
+        # Überschrift für Reporting
+        reporting_label = QLabel("Reporting")  # Überschrift
         reporting_label.setAlignment(Qt.AlignCenter)
         reporting_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
         reporting_layout.addWidget(reporting_label)
-        
-        # Untermenü für Berichte
-        reporting_submenu_layout = QVBoxLayout()
-        reporting_submenu_layout.setAlignment(Qt.AlignCenter)
-        reporting_submenu_label = QLabel("Berichte-Menü")
-        reporting_submenu_label.setAlignment(Qt.AlignCenter)
-        reporting_submenu_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 16px;")
-        reporting_submenu_layout.addWidget(reporting_submenu_label)
-        
         # Button für Report als PDF drucken
-        print_report_btn = QPushButton("Report als PDF drucken")
-        print_report_btn.setMinimumHeight(40)
-        print_report_btn.setStyleSheet("font-size: 16px; margin: 8px 0;")
-        reporting_submenu_layout.addWidget(print_report_btn)
-        
+        print_report_btn = QPushButton("Report als PDF drucken")  # Button für PDF-Report
+        print_report_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
+        print_report_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        reporting_layout.addWidget(print_report_btn)
         # Button für Anzeige des aktuellen Status
-        status_btn = QPushButton("Anzeige des aktuellen Status")
-        status_btn.setMinimumHeight(40)
-        status_btn.setStyleSheet("font-size: 16px; margin: 8px 0;")
-        reporting_submenu_layout.addWidget(status_btn)
-        
-        # Zurück-Button
-        back_btn_r = QPushButton("Zurück")
-        back_btn_r.setMinimumHeight(40)
-        back_btn_r.setStyleSheet("font-size: 16px; margin: 24px 0;")
-        reporting_submenu_layout.addWidget(back_btn_r)
-        
-        reporting_layout.addLayout(reporting_submenu_layout)
-        
-        # Seiten für das Untermenü
+        status_btn = QPushButton("Anzeige des aktuellen Status")  # Button für Statusanzeige
+        status_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
+        status_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        reporting_layout.addWidget(status_btn)
+        # Zurück-Button zum Hauptmenü
+        back_btn_reporting = QPushButton("Zurück zum Hauptmenü")  # Zurück-Button
+        back_btn_reporting.setMinimumHeight(48)  # Einheitliche Mindesthöhe
+        back_btn_reporting.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        reporting_layout.addWidget(back_btn_reporting)
+        # Platzhalterseiten für die beiden Unterseiten
         self.print_report_page = QWidget()
         print_report_layout = QVBoxLayout(self.print_report_page)
         print_report_layout.setAlignment(Qt.AlignCenter)
@@ -111,8 +125,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         print_report_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
         print_report_layout.addWidget(print_report_label)
         back_btn_pr = QPushButton("Zurück")
-        back_btn_pr.setMinimumHeight(40)
-        back_btn_pr.setStyleSheet("font-size: 16px; margin: 24px 0;")
+        back_btn_pr.setMinimumHeight(48)  # Einheitliche Mindesthöhe
+        back_btn_pr.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
         print_report_layout.addWidget(back_btn_pr)
         
         self.status_page = QWidget()
@@ -123,19 +137,75 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         status_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
         status_layout.addWidget(status_label)
         back_btn_s = QPushButton("Zurück")
-        back_btn_s.setMinimumHeight(40)
-        back_btn_s.setStyleSheet("font-size: 16px; margin: 24px 0;")
+        back_btn_s.setMinimumHeight(48)  # Einheitliche Mindesthöhe
+        back_btn_s.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
         status_layout.addWidget(back_btn_s)
         
-        # Module-Seite
-        self.module_page = QWidget()  # Container für Module
-        module_layout = QVBoxLayout(self.module_page)  # Layout für Module-Seite
-        module_layout.setAlignment(Qt.AlignCenter)  # Zentriere alles vertikal und horizontal
+        # Module-Seite gemäß .mm-Vorgabe
+        self.module_page = QWidget()  # Widget für die Module-Seite
+        module_layout = QVBoxLayout(self.module_page)  # Vertikales Layout für Module
+        module_layout.setAlignment(Qt.AlignCenter)  # Zentriert alles
+        # Überschrift für Module
         module_label = QLabel("Module")  # Überschrift
-        module_label.setAlignment(Qt.AlignCenter)  # Zentriert
+        module_label.setAlignment(Qt.AlignCenter)
         module_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
         module_layout.addWidget(module_label)
+        # Button für VOLL Vokabeltrainer
+        voll_btn = QPushButton("VOLL Vokabeltrainer")
+        voll_btn.setMinimumHeight(48)
+        voll_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        module_layout.addWidget(voll_btn)
+        # Button für MUT Einheitentrainer
+        mut_btn = QPushButton("MUT Einheitentrainer")
+        mut_btn.setMinimumHeight(48)
+        mut_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        module_layout.addWidget(mut_btn)
+        # Button für KLAR Karteikartentrainer
+        klar_btn = QPushButton("KLAR Karteikartentrainer")
+        klar_btn.setMinimumHeight(48)
+        klar_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        module_layout.addWidget(klar_btn)
+        # Zurück-Button zum Hauptmenü
+        back_btn_m = QPushButton("Zurück zum Hauptmenü")
+        back_btn_m.setMinimumHeight(48)
+        back_btn_m.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        module_layout.addWidget(back_btn_m)
         module_layout.addStretch(1)  # Abstand nach unten
+        # Platzhalterseiten für die drei Module
+        self.voll_page = QWidget()
+        voll_layout = QVBoxLayout(self.voll_page)
+        voll_layout.setAlignment(Qt.AlignCenter)
+        voll_label = QLabel("VOLL Vokabeltrainer")
+        voll_label.setAlignment(Qt.AlignCenter)
+        voll_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        voll_layout.addWidget(voll_label)
+        back_btn_voll = QPushButton("Zurück zu Module")
+        back_btn_voll.setMinimumHeight(48)
+        back_btn_voll.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        voll_layout.addWidget(back_btn_voll)
+        self.mut_page = QWidget()
+        mut_layout = QVBoxLayout(self.mut_page)
+        mut_layout.setAlignment(Qt.AlignCenter)
+        mut_label = QLabel("MUT Einheitentrainer")
+        mut_label.setAlignment(Qt.AlignCenter)
+        mut_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        mut_layout.addWidget(mut_label)
+        back_btn_mut = QPushButton("Zurück zu Module")
+        back_btn_mut.setMinimumHeight(48)
+        back_btn_mut.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        mut_layout.addWidget(back_btn_mut)
+        self.klar_page = QWidget()
+        klar_layout = QVBoxLayout(self.klar_page)
+        klar_layout.setAlignment(Qt.AlignCenter)
+        klar_label = QLabel("KLAR Karteikartentrainer")
+        klar_label.setAlignment(Qt.AlignCenter)
+        klar_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        klar_layout.addWidget(klar_label)
+        back_btn_klar = QPushButton("Zurück zu Module")
+        back_btn_klar.setMinimumHeight(48)
+        back_btn_klar.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        klar_layout.addWidget(back_btn_klar)
+
         
         # Seiten zum Stack hinzufügen
         self.stack.addWidget(self.menu_page)         # Index 0: Hauptmenü
