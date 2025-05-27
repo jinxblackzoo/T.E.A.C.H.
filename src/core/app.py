@@ -27,7 +27,7 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
             min-width: 80px;
             margin: 10px 10;
             padding: 10px 10px;
-            background-color: grey;
+            background-color: g#62DFF5;
             border-radius: 16px; 
         }
     """
@@ -51,13 +51,30 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
             min-width: 80px;
             margin: 10px 0;
             padding: 10px 10px;
-            background-color: #e0e0e1;
+            background-color: #62B0F5;
             border-radius: 24px;
         }
     """
     # background-color: helles Grau für Zurück-Buttons
     # border-radius: stärker abgerundet (24px)
     # font-size, min-height, min-width, margin, padding: analog zu BUTTON_STYLE
+
+    def create_button(self, text=None, style="default"):
+        """
+        Zentrale Hilfsfunktion zur Erstellung von Buttons mit einheitlichem Design.
+        - style="default": Standard-Button mit zentralem BUTTON_STYLE
+        - style="back":   Zurück-Button mit Pfeil und BACK_BUTTON_STYLE
+        - text:            Optionaler Text (bei None wird für Zurück-Button automatisch der Pfeil verwendet)
+        Gibt einen QPushButton mit passendem Style und Text zurück.
+        """
+        btn = QPushButton()
+        if style == "back":
+            btn.setText("←" if text is None else text)  # Standardmäßig Pfeil
+            btn.setStyleSheet(self.BACK_BUTTON_STYLE)
+        else:
+            btn.setText(text if text else "")
+            btn.setStyleSheet(self.BUTTON_STYLE)
+        return btn
     
     def __init__(self):  # Konstruktor: Einrichtung des Fensters und der UI-Komponenten
         super().__init__()  # Aufruf des Elternkonstruktors
@@ -113,18 +130,12 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
 
         # Drei Hauptmenü-Buttons gemäß .mm:
         # 1. Einstellungen
-        settings_btn = QPushButton("Einstellungen")  # Button für Einstellungen
-        settings_btn.setStyleSheet(self.BUTTON_STYLE)  # Zentrale Stildefinition
+        # Hauptmenü-Buttons mit zentraler Button-Funktion
+        settings_btn = self.create_button("Einstellungen")
         menu_layout.addWidget(settings_btn)
-
-        # 2. Reporting
-        reporting_btn = QPushButton("Reporting")  # Button für Reporting
-        reporting_btn.setStyleSheet(self.BUTTON_STYLE)  # Gleiches Design wie Einstellungen-Button
+        reporting_btn = self.create_button("Reporting")
         menu_layout.addWidget(reporting_btn)
-
-        # 3. Module
-        modules_btn = QPushButton("Module")  # Button für Module
-        modules_btn.setStyleSheet(self.BUTTON_STYLE)  # Gleiches Design wie Einstellungen-Button
+        modules_btn = self.create_button("Module")
         menu_layout.addWidget(modules_btn)
         
         menu_layout.addStretch(1)  # Abstand nach unten für ein aufgeräumtes Layout
@@ -150,14 +161,13 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         settings_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         settings_layout.addWidget(settings_label)
         # Button für KI-Einstellungen (führt zu KI-Einstellungen-Seite)
-        ai_settings_btn = QPushButton("KI-Einstellungen")
-        ai_settings_btn.setStyleSheet(self.BUTTON_STYLE)  # Zentrale Stildefinition
+        # KI-Einstellungen-Button mit zentraler Button-Funktion
+        ai_settings_btn = self.create_button("KI-Einstellungen")
         settings_layout.addWidget(ai_settings_btn)
 
         # Zurück-Button zum Hauptmenü
-        # Zurück-Button mit Pfeil und speziellem Style
-        back_btn_settings = QPushButton("←")
-        back_btn_settings.setStyleSheet(self.BACK_BUTTON_STYLE)
+        # Zurück-Button mit zentraler Button-Funktion
+        back_btn_settings = self.create_button(style="back")
         settings_layout.addWidget(back_btn_settings)
         # KI-Einstellungen-Seite
         self.ai_settings_page = QWidget()
@@ -179,9 +189,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         ai_settings_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         ai_settings_layout.addWidget(ai_settings_label)
         # Zurück-Button zu Einstellungen
-        # Zurück-Button mit Pfeil und speziellem Style
-        back_btn_ai = QPushButton("←")
-        back_btn_ai.setStyleSheet(self.BACK_BUTTON_STYLE)
+        # Zurück-Button mit zentraler Button-Funktion
+        back_btn_ai = self.create_button(style="back")
         ai_settings_layout.addWidget(back_btn_ai)
         # Seiten zum Stack hinzufügen
         self.stack.addWidget(self.menu_page)
@@ -213,19 +222,15 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         reporting_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         reporting_layout.addWidget(reporting_label)
         # Button für Report als PDF drucken
-        print_report_btn = QPushButton("Report als PDF drucken")
-        print_report_btn.setStyleSheet(self.BUTTON_STYLE)  # Zentrale Stildefinition
+        # Reporting-Menü-Buttons mit zentraler Button-Funktion
+        print_report_btn = self.create_button("Report als PDF drucken")
         reporting_layout.addWidget(print_report_btn)
-
-        # Button für Anzeige des aktuellen Status
-        status_btn = QPushButton("Anzeige des aktuellen Status")
-        status_btn.setStyleSheet(self.BUTTON_STYLE)  # Gleiches Design wie PDF-Button
+        status_btn = self.create_button("Status anzeigen")
         reporting_layout.addWidget(status_btn)
 
         # Zurück-Button zum Hauptmenü
-        # Zurück-Button mit Pfeil und speziellem Style
-        back_btn_reporting = QPushButton("←")
-        back_btn_reporting.setStyleSheet(self.BACK_BUTTON_STYLE)
+        # Zurück-Button mit zentraler Button-Funktion
+        back_btn_reporting = self.create_button(style="back")
         reporting_layout.addWidget(back_btn_reporting)
         # Platzhalterseiten für die beiden Unterseiten
         # PDF-Druckseite
@@ -245,9 +250,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         print_report_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         print_report_layout.addWidget(print_report_label)
         
-        # Zurück-Button mit Pfeil und speziellem Style
-        back_btn_pr = QPushButton("←")
-        back_btn_pr.setStyleSheet(self.BACK_BUTTON_STYLE)
+        # Zurück-Button mit zentraler Button-Funktion
+        back_btn_pr = self.create_button(style="back")
         print_report_layout.addWidget(back_btn_pr)
         
         # Statusseite
@@ -267,9 +271,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         status_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         status_layout.addWidget(status_label)
         
-        # Zurück-Button mit Pfeil und speziellem Style
-        back_btn_s = QPushButton("←")
-        back_btn_s.setStyleSheet(self.BACK_BUTTON_STYLE)
+        # Zurück-Button mit zentraler Button-Funktion
+        back_btn_s = self.create_button(style="back")
         status_layout.addWidget(back_btn_s)
         
         # Module-Seite gemäß .mm-Vorgabe
@@ -293,24 +296,17 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         module_layout.addWidget(module_label)
         
         # Button für VOLL Vokabeltrainer
-        voll_btn = QPushButton("VOLL Vokabeltrainer")
-        voll_btn.setStyleSheet(self.BUTTON_STYLE)
+        # Modul-Buttons mit zentraler Button-Funktion
+        voll_btn = self.create_button("VOLL Vokabeltrainer")
         module_layout.addWidget(voll_btn)
-
-        # Button für MUT Einheitentrainer
-        mut_btn = QPushButton("MUT Einheitentrainer")
-        mut_btn.setStyleSheet(self.BUTTON_STYLE)
+        mut_btn = self.create_button("MUT Einheitentrainer")
         module_layout.addWidget(mut_btn)
-
-        # Button für KLAR Karteikartentrainer
-        klar_btn = QPushButton("KLAR Karteikartentrainer")
-        klar_btn.setStyleSheet(self.BUTTON_STYLE)
+        klar_btn = self.create_button("KLAR Karteikartentrainer")
         module_layout.addWidget(klar_btn)
         
         # Zurück-Button zum Hauptmenü
-        # Zurück-Button mit Pfeil und speziellem Style
-        back_btn_m = QPushButton("←")
-        back_btn_m.setStyleSheet(self.BACK_BUTTON_STYLE)
+        # Zurück-Button mit zentraler Button-Funktion
+        back_btn_m = self.create_button(style="back")
         module_layout.addWidget(back_btn_m)
         
         # VOLL Vokabeltrainer Seite
@@ -330,9 +326,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         voll_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         voll_layout.addWidget(voll_label)
         
-        # Zurück-Button mit Pfeil und speziellem Style
-        back_btn_voll = QPushButton("←")
-        back_btn_voll.setStyleSheet(self.BACK_BUTTON_STYLE)
+        # Zurück-Button mit zentraler Button-Funktion
+        back_btn_voll = self.create_button(style="back")
         voll_layout.addWidget(back_btn_voll)
         
         # MUT Einheitentrainer Seite
@@ -352,9 +347,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         mut_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         mut_layout.addWidget(mut_label)
         
-        # Zurück-Button mit Pfeil und speziellem Style
-        back_btn_mut = QPushButton("←")
-        back_btn_mut.setStyleSheet(self.BACK_BUTTON_STYLE)
+        # Zurück-Button mit zentraler Button-Funktion
+        back_btn_mut = self.create_button(style="back")
         mut_layout.addWidget(back_btn_mut)
         
         # KLAR Karteikartentrainer Seite
@@ -374,9 +368,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         klar_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         klar_layout.addWidget(klar_label)
         
-        # Zurück-Button mit Pfeil und speziellem Style
-        back_btn_klar = QPushButton("←")
-        back_btn_klar.setStyleSheet(self.BACK_BUTTON_STYLE)
+        # Zurück-Button mit zentraler Button-Funktion
+        back_btn_klar = self.create_button(style="back")
         klar_layout.addWidget(back_btn_klar)
 
         
