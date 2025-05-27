@@ -21,7 +21,7 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
     # Dies stellt sicher, dass alle Buttons ein einheitliches Erscheinungsbild haben
     BUTTON_STYLE = """
         QPushButton {
-            font-size: 30px;      # Schriftgröße der Button-Beschriftung
+            font-size: 50px;      # Schriftgröße der Button-Beschriftung
             min-height: 100px;    # Minimale Höhe des Buttons in Pixeln
             min-width: 100px;    # Minimale Breite des Buttons in Pixeln
             margin: 20px 0;      # Äußerer Abstand oben und unten (20px), links/rechts (0)
