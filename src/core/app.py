@@ -7,13 +7,15 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
     """Hauptfenster der T.E.A.C.H. Anwendung mit Tab-Navigation."""
     
     # Zentrale Stildefinitionen
+    # Zentrale Stildefinition für alle Buttons in der Anwendung
+    # Dies stellt sicher, dass alle Buttons ein einheitliches Erscheinungsbild haben
     BUTTON_STYLE = """
         QPushButton {
-            font-size: 20px;
-            min-height: 50px;
-            min-width: 100px;
-            margin: 20px 0;
-            padding: 30px 30px;
+            font-size: 20px;      # Schriftgröße der Button-Beschriftung
+            min-height: 50px;    # Minimale Höhe des Buttons in Pixeln
+            min-width: 100px;    # Minimale Breite des Buttons in Pixeln
+            margin: 20px 0;      # Äußerer Abstand oben und unten (20px), links/rechts (0)
+            padding: 30px 30px;  # Innenabstand des Buttons (30px oben/unten, 30px links/rechts)
         }
     """
     
