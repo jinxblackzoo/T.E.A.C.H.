@@ -25,9 +25,10 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
             font-size: 50px;
             min-height: 100px;
             min-width: 100px;
-            margin: 20px 0;
-            padding: 20px 20px;
-            background-color: green;
+            margin: 15px 0;
+            padding: 10px 10px;
+            background-color: blue;
+            border-radius: 12px; 
         }
     """
     # font-size: Schriftgröße der Button-Beschriftung
@@ -36,6 +37,7 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
     # margin: Äußerer Abstand oben und unten (20px), links/rechts (0)
     # padding: Innenabstand des Buttons (20px oben/unten, 20px links/rechts)
     # background-color: Hintergrundfarbe des Buttons
+    # border-radius: Abrundung der Ecken des Buttons (hier 18px)
     
     def __init__(self):  # Konstruktor: Einrichtung des Fensters und der UI-Komponenten
         super().__init__()  # Aufruf des Elternkonstruktors
