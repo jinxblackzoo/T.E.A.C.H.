@@ -19,16 +19,23 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
     
     # Zentrale Stildefinition für alle Buttons in der Anwendung
     # Dies stellt sicher, dass alle Buttons ein einheitliches Erscheinungsbild haben
+    # BUTTON_STYLE definiert das Aussehen aller Buttons
     BUTTON_STYLE = """
         QPushButton {
-            font-size: 50px;      # Schriftgröße der Button-Beschriftung
-            min-height: 100px;    # Minimale Höhe des Buttons in Pixeln
-            min-width: 100px;    # Minimale Breite des Buttons in Pixeln
-            margin: 20px 0;      # Äußerer Abstand oben und unten (20px), links/rechts (0)
-            padding: 20px 20px;  # Innenabstand des Buttons (30px oben/unten, 30px links/rechts)
+            font-size: 50px;
+            min-height: 100px;
+            min-width: 100px;
+            margin: 20px 0;
+            padding: 20px 20px;
             background-color: green;
         }
     """
+    # font-size: Schriftgröße der Button-Beschriftung
+    # min-height: Minimale Höhe des Buttons in Pixeln
+    # min-width: Minimale Breite des Buttons in Pixeln
+    # margin: Äußerer Abstand oben und unten (20px), links/rechts (0)
+    # padding: Innenabstand des Buttons (20px oben/unten, 20px links/rechts)
+    # background-color: Hintergrundfarbe des Buttons
     
     def __init__(self):  # Konstruktor: Einrichtung des Fensters und der UI-Komponenten
         super().__init__()  # Aufruf des Elternkonstruktors
