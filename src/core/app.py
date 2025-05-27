@@ -1,5 +1,5 @@
 # Datei: src/core/app.py – Hauptanwendung mit Tab-basierter Navigation
-from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QHBoxLayout, QPushButton, QStackedWidget  # Import Qt-Widgets und Button-Layout mit StackedWidget
+from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QPushButton, QStackedWidget  # Import Qt-Widgets und Button-Layout mit StackedWidget
 from PySide6.QtCore import Qt  # Import Qt-Kernfunktionen fürs Alignment
 from .module import TEACHModule  # Import der Basisklasse für Module
 
@@ -17,28 +17,44 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
 
         # Begrüßungstext anzeigen
         welcome_label = QLabel("Willkommen bei T.E.A.C.H.")  # QLabel für Willkommensnachricht
+        welcome_label = QLabel("Toll ein anderes chaotisches Hilfeprogramm")
         welcome_label.setAlignment(Qt.AlignCenter)  # Zentrieren des Textes
         welcome_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 20px;")  # Stil anpassen
         self.layout.addWidget(welcome_label)  # Begrüßung in das Layout einfügen
 
         # Buttons für Einstellungen, Berichte und Module
-        button_layout = QHBoxLayout()  # Horizontales Layout für Buttons
-        button_layout.addStretch(1)  # linker Abstand für Zentrierung
+        button_layout = QVBoxLayout()  # Vertikales Layout für Buttons
+        button_layout.setAlignment(Qt.AlignHCenter)  # Buttons horizontal zentrieren
         settings_btn = QPushButton("Einstellungen")  # Button für Einstellungen
         reporting_btn = QPushButton("Berichte")  # Button für Berichte
         modules_btn = QPushButton("Module")  # Button für Module
-        button_layout.addWidget(settings_btn)
-        button_layout.addWidget(reporting_btn)
-        button_layout.addWidget(modules_btn)
-        button_layout.addStretch(1)  # rechter Abstand für Zentrierung
-        self.layout.addLayout(button_layout)  # Füge das Button-Layout ins Hauptlayout ein
+        button_layout.addWidget(settings_btn)  # Einstellungen hinzufügen
+        button_layout.addWidget(reporting_btn)  # Berichte hinzufügen
+        button_layout.addWidget(modules_btn)  # Module hinzufügen
+        self.layout.addLayout(button_layout)  # Füge das vertikale Button-Layout ein
 
         # Untermenüs als gestapeltes Widget einrichten
         self.stack = QStackedWidget()  # StackedWidget für Untermenüs
-        # Settings-Seite erstellen
-        self.settings_page = QWidget()  # Container für Einstellungen
-        settings_layout = QVBoxLayout(self.settings_page)  # Layout für Settings-Seite
-        settings_layout.addWidget(QLabel("Einstellungen-Übersicht"))  # Platzhalter-Text
+        # Einstellungen-Menü als eigene Seite mit Buttons
+        self.settings_page = QWidget()  # Widget für die Einstellungen-Seite
+        settings_layout = QVBoxLayout(self.settings_page)  # Vertikales Layout für die Einstellungen
+        settings_layout.setAlignment(Qt.AlignHCenter)  # Zentriere die Buttons horizontal
+        # Überschrift für das Einstellungsmenü
+        settings_label = QLabel("Einstellungen")  # Überschrift
+        settings_label.setAlignment(Qt.AlignCenter)  # Zentriert
+        settings_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 16px;")  # Stil
+        settings_layout.addWidget(settings_label)  # Überschrift hinzufügen
+        # Menü-Buttons für verschiedene Einstellungsbereiche
+        general_btn = QPushButton("Allgemein")  # Button für allgemeine Einstellungen
+        user_btn = QPushButton("Benutzer")  # Button für Benutzer-Einstellungen
+        back_btn = QPushButton("Zurück")  # Button zum Zurückkehren ins Hauptmenü
+        settings_layout.addWidget(general_btn)  # Füge Button für Allgemein hinzu
+        settings_layout.addWidget(user_btn)  # Füge Button für Benutzer hinzu
+        settings_layout.addWidget(back_btn)  # Füge Zurück-Button hinzu
+        # Logik für Zurück-Button: Wechsel ins Hauptmenü (Settings als Startseite)
+        back_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))  # Zurück ins Hauptmenü
+        # Die Seite für das Hauptmenü referenzieren (siehe unten)
+
         # Reporting-Seite erstellen
         self.reporting_page = QWidget()  # Container für Berichte
         reporting_layout = QVBoxLayout(self.reporting_page)  # Layout für Reporting-Seite
