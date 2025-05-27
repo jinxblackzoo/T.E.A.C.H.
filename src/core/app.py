@@ -35,17 +35,20 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         # 1. Einstellungen
         settings_btn = QPushButton("Einstellungen")  # Button für Einstellungen
         settings_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
-        settings_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        settings_btn.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        settings_btn.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         menu_layout.addWidget(settings_btn)
         # 2. Reporting
         reporting_btn = QPushButton("Reporting")  # Button für Reporting
         reporting_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
-        reporting_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        reporting_btn.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        reporting_btn.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         menu_layout.addWidget(reporting_btn)
         # 3. Module
         modules_btn = QPushButton("Module")  # Button für Module
         modules_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
-        modules_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        modules_btn.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        modules_btn.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         menu_layout.addWidget(modules_btn)
         menu_layout.addStretch(1)  # Abstand nach unten für ein aufgeräumtes Layout
 
@@ -62,12 +65,14 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         # Button für KI-Einstellungen (führt zu KI-Einstellungen-Seite)
         ai_settings_btn = QPushButton("KI-Einstellungen")  # Button für KI-Einstellungen
         ai_settings_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
-        ai_settings_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        ai_settings_btn.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        ai_settings_btn.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         settings_layout.addWidget(ai_settings_btn)
         # Zurück-Button zum Hauptmenü
         back_btn_settings = QPushButton("Zurück zum Hauptmenü")  # Zurück-Button
         back_btn_settings.setMinimumHeight(48)  # Einheitliche Mindesthöhe
-        back_btn_settings.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        back_btn_settings.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        back_btn_settings.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         settings_layout.addWidget(back_btn_settings)
         # KI-Einstellungen-Seite (Platzhalter für spätere Untermenüs)
         self.ai_settings_page = QWidget()
@@ -80,7 +85,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         # Zurück-Button zu Einstellungen
         back_btn_ai = QPushButton("Zurück zu Einstellungen")
         back_btn_ai.setMinimumHeight(48)
-        back_btn_ai.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        back_btn_ai.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        back_btn_ai.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         ai_settings_layout.addWidget(back_btn_ai)
         # Seiten zum Stack hinzufügen
         self.stack.addWidget(self.menu_page)
@@ -104,17 +110,20 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         # Button für Report als PDF drucken
         print_report_btn = QPushButton("Report als PDF drucken")  # Button für PDF-Report
         print_report_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
-        print_report_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        print_report_btn.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        print_report_btn.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         reporting_layout.addWidget(print_report_btn)
         # Button für Anzeige des aktuellen Status
         status_btn = QPushButton("Anzeige des aktuellen Status")  # Button für Statusanzeige
         status_btn.setMinimumHeight(48)  # Einheitliche Mindesthöhe
-        status_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        status_btn.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        status_btn.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         reporting_layout.addWidget(status_btn)
         # Zurück-Button zum Hauptmenü
         back_btn_reporting = QPushButton("Zurück zum Hauptmenü")  # Zurück-Button
         back_btn_reporting.setMinimumHeight(48)  # Einheitliche Mindesthöhe
-        back_btn_reporting.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        back_btn_reporting.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        back_btn_reporting.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         reporting_layout.addWidget(back_btn_reporting)
         # Platzhalterseiten für die beiden Unterseiten
         self.print_report_page = QWidget()
@@ -126,7 +135,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         print_report_layout.addWidget(print_report_label)
         back_btn_pr = QPushButton("Zurück")
         back_btn_pr.setMinimumHeight(48)  # Einheitliche Mindesthöhe
-        back_btn_pr.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        back_btn_pr.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        back_btn_pr.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         print_report_layout.addWidget(back_btn_pr)
         
         self.status_page = QWidget()
@@ -138,7 +148,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         status_layout.addWidget(status_label)
         back_btn_s = QPushButton("Zurück")
         back_btn_s.setMinimumHeight(48)  # Einheitliche Mindesthöhe
-        back_btn_s.setStyleSheet("font-size: 20px; margin: 16px 0;")  # Einheitliches Design
+        back_btn_s.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        back_btn_s.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         status_layout.addWidget(back_btn_s)
         
         # Module-Seite gemäß .mm-Vorgabe
@@ -153,22 +164,26 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         # Button für VOLL Vokabeltrainer
         voll_btn = QPushButton("VOLL Vokabeltrainer")
         voll_btn.setMinimumHeight(48)
-        voll_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        voll_btn.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        voll_btn.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         module_layout.addWidget(voll_btn)
         # Button für MUT Einheitentrainer
         mut_btn = QPushButton("MUT Einheitentrainer")
         mut_btn.setMinimumHeight(48)
-        mut_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        mut_btn.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        mut_btn.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         module_layout.addWidget(mut_btn)
         # Button für KLAR Karteikartentrainer
         klar_btn = QPushButton("KLAR Karteikartentrainer")
         klar_btn.setMinimumHeight(48)
-        klar_btn.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        klar_btn.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        klar_btn.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         module_layout.addWidget(klar_btn)
         # Zurück-Button zum Hauptmenü
         back_btn_m = QPushButton("Zurück zum Hauptmenü")
         back_btn_m.setMinimumHeight(48)
-        back_btn_m.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        back_btn_m.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        back_btn_m.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         module_layout.addWidget(back_btn_m)
         module_layout.addStretch(1)  # Abstand nach unten
         # Platzhalterseiten für die drei Module
@@ -181,7 +196,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         voll_layout.addWidget(voll_label)
         back_btn_voll = QPushButton("Zurück zu Module")
         back_btn_voll.setMinimumHeight(48)
-        back_btn_voll.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        back_btn_voll.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        back_btn_voll.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         voll_layout.addWidget(back_btn_voll)
         self.mut_page = QWidget()
         mut_layout = QVBoxLayout(self.mut_page)
@@ -192,7 +208,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         mut_layout.addWidget(mut_label)
         back_btn_mut = QPushButton("Zurück zu Module")
         back_btn_mut.setMinimumHeight(48)
-        back_btn_mut.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        back_btn_mut.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        back_btn_mut.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         mut_layout.addWidget(back_btn_mut)
         self.klar_page = QWidget()
         klar_layout = QVBoxLayout(self.klar_page)
@@ -203,7 +220,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         klar_layout.addWidget(klar_label)
         back_btn_klar = QPushButton("Zurück zu Module")
         back_btn_klar.setMinimumHeight(48)
-        back_btn_klar.setStyleSheet("font-size: 20px; margin: 16px 0;")
+        back_btn_klar.setMinimumHeight(55)  # Mindesthöhe 55 Pixel
+        back_btn_klar.setStyleSheet("font-size: 20px; margin: 20px 0;")  # Schriftgröße 20px, Margin 20px 0
         klar_layout.addWidget(back_btn_klar)
 
         
