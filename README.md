@@ -38,6 +38,7 @@ Die Anwendung folgt einem modularen Ansatz:
 - Anpassbare Lernniveaus
 
 ## 🚀 Installation
+
 ### Voraussetzungen
 - Python 3.9 oder höher
 - pip (Python Paketmanager)
@@ -66,6 +67,41 @@ Die Anwendung folgt einem modularen Ansatz:
    ```bash
    python src/main.py
    ```
+
+### Windows
+Der folgende Abschnitt zeigt, wie du T.E.A.C.H. unter Windows installierst und startest:
+```powershell
+# Repository klonen (in gewünschtes Verzeichnis)
+PS> git clone https://github.com/jinxblackzoo/T.E.A.C.H. .
+# Abhängigkeiten installieren
+PS> pip install PySide6
+# Anwendung starten
+PS> python src/main.py
+```
+
+### Linux (ohne virtuelle Umgebung)
+Der folgende Abschnitt zeigt, wie du T.E.A.C.H. unter Linux testest, ohne venv:
+```bash
+# Ins Projektverzeichnis wechseln
+$ cd /Pfad/zum/Projekt
+# Repository aktualisieren
+$ git pull origin main
+# Abhängigkeiten installieren
+$ sudo pip3 install PySide6
+# Anwendung starten
+$ python3 src/main.py
+```
+
+### macOS
+Der folgende Abschnitt zeigt, wie du T.E.A.C.H. unter macOS installierst und startest:
+```bash
+# Repository klonen (in gewünschtes Verzeichnis)
+$ git clone https://github.com/jinxblackzoo/T.E.A.C.H. .
+# Abhängigkeiten installieren
+$ pip3 install PySide6
+# Anwendung starten
+$ python3 src/main.py
+```
 
 ## 📝 Lizenz
 [GNU GPL v3.0](LICENSE)
