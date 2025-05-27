@@ -210,19 +210,43 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         # Seiten zum Stack hinzufügen
         self.stack.addWidget(self.menu_page)         # Index 0: Hauptmenü
         self.stack.addWidget(self.settings_page)     # Index 1: Einstellungen
-        self.stack.addWidget(self.reporting_page)    # Index 2: Berichte
-        self.stack.addWidget(self.module_page)       # Index 3: Module
+        self.stack.addWidget(self.ai_settings_page)   # Index 2: KI-Einstellungen
+        self.stack.addWidget(self.reporting_page)    # Index 3: Berichte
         self.stack.addWidget(self.print_report_page) # Index 4: Report als PDF drucken
         self.stack.addWidget(self.status_page)       # Index 5: Anzeige des aktuellen Status
+        self.stack.addWidget(self.module_page)       # Index 6: Module
+        self.stack.addWidget(self.voll_page)         # Index 7: VOLL Vokabeltrainer
+        self.stack.addWidget(self.mut_page)          # Index 8: MUT Einheitentrainer
+        self.stack.addWidget(self.klar_page)         # Index 9: KLAR Karteikartentrainer
         self.stack.setCurrentWidget(self.menu_page)  # Starte mit Hauptmenü
 
         # Navigation: Buttons verbinden
+        # Hauptmenü-Buttons
         settings_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.settings_page))
         reporting_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.reporting_page))
         modules_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.module_page))
-        back_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
-        back_btn_r.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
+        
+        # Einstellungen-Buttons
+        ai_settings_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.ai_settings_page))
+        back_btn_settings.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
+        back_btn_ai.clicked.connect(lambda: self.stack.setCurrentWidget(self.settings_page))
+        
+        # Reporting-Buttons
         print_report_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.print_report_page))
         status_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.status_page))
+        back_btn_reporting.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
+        
+        # Modul-Buttons
+        voll_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.voll_page))
+        mut_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.mut_page))
+        klar_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.klar_page))
+        back_btn_m.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
+        
+        # Zurück-Buttons in den Modul-Seiten
+        back_btn_voll.clicked.connect(lambda: self.stack.setCurrentWidget(self.module_page))
+        back_btn_mut.clicked.connect(lambda: self.stack.setCurrentWidget(self.module_page))
+        back_btn_klar.clicked.connect(lambda: self.stack.setCurrentWidget(self.module_page))
+        
+        # Zurück-Buttons in den Reporting-Seiten
         back_btn_pr.clicked.connect(lambda: self.stack.setCurrentWidget(self.reporting_page))
         back_btn_s.clicked.connect(lambda: self.stack.setCurrentWidget(self.reporting_page))
