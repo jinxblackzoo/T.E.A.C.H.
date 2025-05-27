@@ -52,6 +52,11 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         main_layout.addWidget(content_widget)
         self.setCentralWidget(self.central_widget)  # Setzt das Hauptwidget
 
+        # Setze das zentrale Button-Stylesheet global auf das Hauptfenster
+        # Dadurch wird sichergestellt, dass alle QPushButton-Elemente im Fenster das Stylesheet erhalten
+        # Dies hilft, Fehler durch lokale Überschreibungen oder falsche Anwendung zu vermeiden
+        self.setStyleSheet(self.BUTTON_STYLE)
+
         # Hauptmenü-Seite gemäß .mm-Vorgabe
         self.menu_page = QWidget()
         menu_outer_layout = QVBoxLayout(self.menu_page)
