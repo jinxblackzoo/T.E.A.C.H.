@@ -7,15 +7,25 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
     """Hauptfenster der T.E.A.C.H. Anwendung mit Tab-Navigation."""
     
     # Zentrale Stildefinitionen
+    # Layout-Einstellungen für alle Seiten
+    LAYOUT_STYLE = {
+        'alignment': Qt.AlignTop | Qt.AlignHCenter,  # Oben zentriert
+        'spacing': 20,                              # Abstand zwischen Widgets
+        'margins': (0, 20, 0, 0),                   # Rand oben 20px, sonst 0
+        'title_style': 'font-size: 24px; font-weight: bold; margin: 24px 0;',
+        'subtitle_style': 'font-size: 18px; margin-bottom: 36px;',
+        'content_margins': (40, 20, 40, 20)        # Innenabstand für Inhaltscontainer
+    }
+    
     # Zentrale Stildefinition für alle Buttons in der Anwendung
     # Dies stellt sicher, dass alle Buttons ein einheitliches Erscheinungsbild haben
     BUTTON_STYLE = """
         QPushButton {
-            font-size: 20px;      # Schriftgröße der Button-Beschriftung
+            font-size: 30px;      # Schriftgröße der Button-Beschriftung
             min-height: 50px;    # Minimale Höhe des Buttons in Pixeln
             min-width: 100px;    # Minimale Breite des Buttons in Pixeln
             margin: 20px 0;      # Äußerer Abstand oben und unten (20px), links/rechts (0)
-            padding: 30px 30px;  # Innenabstand des Buttons (30px oben/unten, 30px links/rechts)
+            padding: 15px 15px;  # Innenabstand des Buttons (30px oben/unten, 30px links/rechts)
         }
     """
     
@@ -44,23 +54,26 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         # Hauptmenü-Seite gemäß .mm-Vorgabe
         self.menu_page = QWidget()
         menu_outer_layout = QVBoxLayout(self.menu_page)
-        menu_outer_layout.setAlignment(Qt.AlignCenter)
+        menu_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        menu_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        menu_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
         
-        # Container für zentrierte Buttons
+        # Container für zentrierten Inhalt
         menu_container = QWidget()
         menu_layout = QVBoxLayout(menu_container)
-        menu_layout.setAlignment(Qt.AlignCenter)
-        menu_layout.setSpacing(20)  # Abstand zwischen den Buttons
-        menu_outer_layout.addWidget(menu_container)
+        menu_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        menu_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        menu_outer_layout.addWidget(menu_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
 
         # Begrüßungstext
-        welcome_label = QLabel("Willkommen bei T.E.A.C.H.")  # Überschrift
-        welcome_label.setAlignment(Qt.AlignCenter)  # Zentriert
-        welcome_label.setStyleSheet("font-size: 28px; font-weight: bold; margin: 24px;")  # Groß und prominent
+        welcome_label = QLabel("Willkommen bei T.E.A.C.H.")
+        welcome_label.setAlignment(Qt.AlignCenter)
+        welcome_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         menu_layout.addWidget(welcome_label)
-        subtitle_label = QLabel("Toll ein anderes chaotisches Hilfeprogramm")  # Untertitel
+        
+        subtitle_label = QLabel("Toll ein anderes chaotisches Hilfeprogramm")
         subtitle_label.setAlignment(Qt.AlignCenter)
-        subtitle_label.setStyleSheet("font-size: 18px; margin-bottom: 36px;")  # Stil wie besprochen
+        subtitle_label.setStyleSheet(self.LAYOUT_STYLE['subtitle_style'])
         menu_layout.addWidget(subtitle_label)
 
         # Drei Hauptmenü-Buttons gemäß .mm:
@@ -85,18 +98,21 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         # Einstellungen-Seite 
         self.settings_page = QWidget()
         settings_outer_layout = QVBoxLayout(self.settings_page)
-        settings_outer_layout.setAlignment(Qt.AlignCenter)
+        settings_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        settings_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        settings_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
         
-        # Container für zentrierte Buttons
+        # Container für zentrierten Inhalt
         settings_container = QWidget()
         settings_layout = QVBoxLayout(settings_container)
-        settings_layout.setAlignment(Qt.AlignCenter)
-        settings_layout.setSpacing(20)  # Abstand zwischen den Buttons
-        settings_outer_layout.addWidget(settings_container)
+        settings_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        settings_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        settings_outer_layout.addWidget(settings_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        
         # Überschrift für Einstellungen
-        settings_label = QLabel("Einstellungen")  # Überschrift
+        settings_label = QLabel("Einstellungen")
         settings_label.setAlignment(Qt.AlignCenter)
-        settings_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        settings_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         settings_layout.addWidget(settings_label)
         # Button für KI-Einstellungen (führt zu KI-Einstellungen-Seite)
         ai_settings_btn = QPushButton("KI-Einstellungen")
@@ -107,13 +123,24 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         back_btn_settings = QPushButton("Zurück zum Hauptmenü")
         back_btn_settings.setStyleSheet(self.BUTTON_STYLE)  # Gleiches Design wie KI-Einstellungen-Button
         settings_layout.addWidget(back_btn_settings)
-        # KI-Einstellungen-Seite (Platzhalter für spätere Untermenüs)
+        # KI-Einstellungen-Seite
         self.ai_settings_page = QWidget()
-        ai_settings_layout = QVBoxLayout(self.ai_settings_page)
-        ai_settings_layout.setAlignment(Qt.AlignCenter)
+        ai_outer_layout = QVBoxLayout(self.ai_settings_page)
+        ai_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        ai_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        ai_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
+        
+        # Container für zentrierten Inhalt
+        ai_container = QWidget()
+        ai_settings_layout = QVBoxLayout(ai_container)
+        ai_settings_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        ai_settings_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        ai_outer_layout.addWidget(ai_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        
+        # Überschrift für KI-Einstellungen
         ai_settings_label = QLabel("KI-Einstellungen")
         ai_settings_label.setAlignment(Qt.AlignCenter)
-        ai_settings_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        ai_settings_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         ai_settings_layout.addWidget(ai_settings_label)
         # Zurück-Button zu Einstellungen
         back_btn_ai = QPushButton("Zurück zu Einstellungen")
@@ -130,13 +157,23 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         back_btn_ai.clicked.connect(lambda: self.stack.setCurrentWidget(self.settings_page))
 
         # Reporting-Seite gemäß .mm-Vorgabe
-        self.reporting_page = QWidget()  # Widget für das Reporting-Menü
-        reporting_layout = QVBoxLayout(self.reporting_page)  # Vertikales Layout für Reporting
-        reporting_layout.setAlignment(Qt.AlignCenter)  # Zentriert alles
+        self.reporting_page = QWidget()
+        reporting_outer_layout = QVBoxLayout(self.reporting_page)
+        reporting_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        reporting_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        reporting_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
+        
+        # Container für zentrierten Inhalt
+        reporting_container = QWidget()
+        reporting_layout = QVBoxLayout(reporting_container)
+        reporting_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        reporting_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        reporting_outer_layout.addWidget(reporting_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        
         # Überschrift für Reporting
-        reporting_label = QLabel("Reporting")  # Überschrift
+        reporting_label = QLabel("Reporting")
         reporting_label.setAlignment(Qt.AlignCenter)
-        reporting_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        reporting_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         reporting_layout.addWidget(reporting_label)
         # Button für Report als PDF drucken
         print_report_btn = QPushButton("Report als PDF drucken")
@@ -153,87 +190,149 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         back_btn_reporting.setStyleSheet(self.BUTTON_STYLE)  # Gleiches Design wie PDF-Button
         reporting_layout.addWidget(back_btn_reporting)
         # Platzhalterseiten für die beiden Unterseiten
+        # PDF-Druckseite
         self.print_report_page = QWidget()
-        print_report_layout = QVBoxLayout(self.print_report_page)
-        print_report_layout.setAlignment(Qt.AlignCenter)
+        print_report_outer_layout = QVBoxLayout(self.print_report_page)
+        print_report_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        print_report_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        print_report_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
+        
+        print_report_container = QWidget()
+        print_report_layout = QVBoxLayout(print_report_container)
+        print_report_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        print_report_outer_layout.addWidget(print_report_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        
         print_report_label = QLabel("Report als PDF drucken")
         print_report_label.setAlignment(Qt.AlignCenter)
-        print_report_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        print_report_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         print_report_layout.addWidget(print_report_label)
+        
         back_btn_pr = QPushButton("Zurück zu Reporting")
-        back_btn_pr.setStyleSheet(self.BUTTON_STYLE)  # Zentrale Stildefinition
+        back_btn_pr.setStyleSheet(self.BUTTON_STYLE)
         print_report_layout.addWidget(back_btn_pr)
         
+        # Statusseite
         self.status_page = QWidget()
-        status_layout = QVBoxLayout(self.status_page)
-        status_layout.setAlignment(Qt.AlignCenter)
+        status_outer_layout = QVBoxLayout(self.status_page)
+        status_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        status_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        status_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
+        
+        status_container = QWidget()
+        status_layout = QVBoxLayout(status_container)
+        status_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        status_outer_layout.addWidget(status_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        
         status_label = QLabel("Anzeige des aktuellen Status")
         status_label.setAlignment(Qt.AlignCenter)
-        status_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        status_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         status_layout.addWidget(status_label)
+        
         back_btn_s = QPushButton("Zurück zu Reporting")
-        back_btn_s.setStyleSheet(self.BUTTON_STYLE)  # Zentrale Stildefinition
+        back_btn_s.setStyleSheet(self.BUTTON_STYLE)
         status_layout.addWidget(back_btn_s)
         
         # Module-Seite gemäß .mm-Vorgabe
-        self.module_page = QWidget()  # Widget für die Module-Seite
-        module_layout = QVBoxLayout(self.module_page)  # Vertikales Layout für Module
-        module_layout.setAlignment(Qt.AlignCenter)  # Zentriert alles
+        self.module_page = QWidget()
+        module_outer_layout = QVBoxLayout(self.module_page)
+        module_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        module_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        module_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
+        
+        # Container für zentrierten Inhalt
+        module_container = QWidget()
+        module_layout = QVBoxLayout(module_container)
+        module_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        module_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        module_outer_layout.addWidget(module_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        
         # Überschrift für Module
-        module_label = QLabel("Module")  # Überschrift
+        module_label = QLabel("Module")
         module_label.setAlignment(Qt.AlignCenter)
-        module_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        module_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         module_layout.addWidget(module_label)
+        
         # Button für VOLL Vokabeltrainer
         voll_btn = QPushButton("VOLL Vokabeltrainer")
-        voll_btn.setStyleSheet(self.BUTTON_STYLE)  # Zentrale Stildefinition
+        voll_btn.setStyleSheet(self.BUTTON_STYLE)
         module_layout.addWidget(voll_btn)
 
         # Button für MUT Einheitentrainer
         mut_btn = QPushButton("MUT Einheitentrainer")
-        mut_btn.setStyleSheet(self.BUTTON_STYLE)  # Gleiches Design wie VOLL-Button
+        mut_btn.setStyleSheet(self.BUTTON_STYLE)
         module_layout.addWidget(mut_btn)
 
         # Button für KLAR Karteikartentrainer
         klar_btn = QPushButton("KLAR Karteikartentrainer")
-        klar_btn.setStyleSheet(self.BUTTON_STYLE)  # Gleiches Design wie VOLL-Button
+        klar_btn.setStyleSheet(self.BUTTON_STYLE)
         module_layout.addWidget(klar_btn)
-
+        
         # Zurück-Button zum Hauptmenü
         back_btn_m = QPushButton("Zurück zum Hauptmenü")
-        back_btn_m.setStyleSheet(self.BUTTON_STYLE)  # Zentrale Stildefinition
+        back_btn_m.setStyleSheet(self.BUTTON_STYLE)
         module_layout.addWidget(back_btn_m)
-        module_layout.addStretch(1)  # Abstand nach unten
-        # Platzhalterseiten für die drei Module
+        
+        # VOLL Vokabeltrainer Seite
         self.voll_page = QWidget()
-        voll_layout = QVBoxLayout(self.voll_page)
-        voll_layout.setAlignment(Qt.AlignCenter)
+        voll_outer_layout = QVBoxLayout(self.voll_page)
+        voll_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        voll_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        voll_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
+        
+        voll_container = QWidget()
+        voll_layout = QVBoxLayout(voll_container)
+        voll_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        voll_outer_layout.addWidget(voll_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        
         voll_label = QLabel("VOLL Vokabeltrainer")
         voll_label.setAlignment(Qt.AlignCenter)
-        voll_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        voll_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         voll_layout.addWidget(voll_label)
+        
         back_btn_voll = QPushButton("Zurück zu Module")
-        back_btn_voll.setStyleSheet(self.BUTTON_STYLE)  # Zentrale Stildefinition
+        back_btn_voll.setStyleSheet(self.BUTTON_STYLE)
         voll_layout.addWidget(back_btn_voll)
+        
+        # MUT Einheitentrainer Seite
         self.mut_page = QWidget()
-        mut_layout = QVBoxLayout(self.mut_page)
-        mut_layout.setAlignment(Qt.AlignCenter)
+        mut_outer_layout = QVBoxLayout(self.mut_page)
+        mut_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        mut_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        mut_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
+        
+        mut_container = QWidget()
+        mut_layout = QVBoxLayout(mut_container)
+        mut_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        mut_outer_layout.addWidget(mut_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        
         mut_label = QLabel("MUT Einheitentrainer")
         mut_label.setAlignment(Qt.AlignCenter)
-        mut_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        mut_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         mut_layout.addWidget(mut_label)
+        
         back_btn_mut = QPushButton("Zurück zu Module")
-        back_btn_mut.setStyleSheet(self.BUTTON_STYLE)  # Zentrale Stildefinition
+        back_btn_mut.setStyleSheet(self.BUTTON_STYLE)
         mut_layout.addWidget(back_btn_mut)
+        
+        # KLAR Karteikartentrainer Seite
         self.klar_page = QWidget()
-        klar_layout = QVBoxLayout(self.klar_page)
-        klar_layout.setAlignment(Qt.AlignCenter)
+        klar_outer_layout = QVBoxLayout(self.klar_page)
+        klar_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        klar_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        klar_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
+        
+        klar_container = QWidget()
+        klar_layout = QVBoxLayout(klar_container)
+        klar_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        klar_outer_layout.addWidget(klar_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        
         klar_label = QLabel("KLAR Karteikartentrainer")
         klar_label.setAlignment(Qt.AlignCenter)
-        klar_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        klar_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         klar_layout.addWidget(klar_label)
+        
         back_btn_klar = QPushButton("Zurück zu Module")
-        back_btn_klar.setStyleSheet(self.BUTTON_STYLE)  # Zentrale Stildefinition
+        back_btn_klar.setStyleSheet(self.BUTTON_STYLE)
         klar_layout.addWidget(back_btn_klar)
 
         
