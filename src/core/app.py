@@ -27,8 +27,8 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
             min-width: 100px;
             margin: 10px 0;
             padding: 10px 10px;
-            background-color: blue;
-            border-radius: 12px; 
+            background-color: grey;
+            border-radius: 16px; 
         }
     """
     # font-size: Schriftgröße der Button-Beschriftung
