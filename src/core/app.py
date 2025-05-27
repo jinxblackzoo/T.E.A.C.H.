@@ -12,12 +12,9 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
 
         # Zentrales Widget und Layout anlegen
         self.central_widget = QWidget()  # Hauptcontainer-Widget
-        self.setCentralWidget(self.central_widget)  # Setzen als Zentral-Widget des Hauptfensters
-        self.layout = QVBoxLayout(self.central_widget)  # Vertikales Layout für das Zentral-Widget
-
         # QStackedWidget für alle Seiten (wie KLAR)
         self.stack = QStackedWidget()  # Gestapeltes Widget für Menüführung
-        self.setCentralWidget(self.stack)  # Stack ist jetzt das Zentral-Widget
+        self.setCentralWidget(self.stack)  # Stack ist das Zentral-Widget
 
         # Hauptmenü-Seite (wie KLAR)
         self.menu_page = QWidget()  # Widget für das Hauptmenü
@@ -76,37 +73,77 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         reporting_label.setAlignment(Qt.AlignCenter)
         reporting_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
         reporting_layout.addWidget(reporting_label)
-        export_btn = QPushButton("Exportieren")
-        export_btn.setMinimumHeight(40)
-        export_btn.setStyleSheet("font-size: 16px; margin: 8px 0;")
-        reporting_layout.addWidget(export_btn)
+        
+        # Untermenü für Berichte
+        reporting_submenu_layout = QVBoxLayout()
+        reporting_submenu_layout.setAlignment(Qt.AlignCenter)
+        reporting_submenu_label = QLabel("Berichte-Menü")
+        reporting_submenu_label.setAlignment(Qt.AlignCenter)
+        reporting_submenu_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 16px;")
+        reporting_submenu_layout.addWidget(reporting_submenu_label)
+        
+        # Button für Report als PDF drucken
+        print_report_btn = QPushButton("Report als PDF drucken")
+        print_report_btn.setMinimumHeight(40)
+        print_report_btn.setStyleSheet("font-size: 16px; margin: 8px 0;")
+        reporting_submenu_layout.addWidget(print_report_btn)
+        
+        # Button für Anzeige des aktuellen Status
+        status_btn = QPushButton("Anzeige des aktuellen Status")
+        status_btn.setMinimumHeight(40)
+        status_btn.setStyleSheet("font-size: 16px; margin: 8px 0;")
+        reporting_submenu_layout.addWidget(status_btn)
+        
+        # Zurück-Button
         back_btn_r = QPushButton("Zurück")
         back_btn_r.setMinimumHeight(40)
         back_btn_r.setStyleSheet("font-size: 16px; margin: 24px 0;")
-        reporting_layout.addWidget(back_btn_r)
-
+        reporting_submenu_layout.addWidget(back_btn_r)
+        
+        reporting_layout.addLayout(reporting_submenu_layout)
+        
+        # Seiten für das Untermenü
+        self.print_report_page = QWidget()
+        print_report_layout = QVBoxLayout(self.print_report_page)
+        print_report_layout.setAlignment(Qt.AlignCenter)
+        print_report_label = QLabel("Report als PDF drucken")
+        print_report_label.setAlignment(Qt.AlignCenter)
+        print_report_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        print_report_layout.addWidget(print_report_label)
+        back_btn_pr = QPushButton("Zurück")
+        back_btn_pr.setMinimumHeight(40)
+        back_btn_pr.setStyleSheet("font-size: 16px; margin: 24px 0;")
+        print_report_layout.addWidget(back_btn_pr)
+        
+        self.status_page = QWidget()
+        status_layout = QVBoxLayout(self.status_page)
+        status_layout.setAlignment(Qt.AlignCenter)
+        status_label = QLabel("Anzeige des aktuellen Status")
+        status_label.setAlignment(Qt.AlignCenter)
+        status_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
+        status_layout.addWidget(status_label)
+        back_btn_s = QPushButton("Zurück")
+        back_btn_s.setMinimumHeight(40)
+        back_btn_s.setStyleSheet("font-size: 16px; margin: 24px 0;")
+        status_layout.addWidget(back_btn_s)
+        
         # Module-Seite
-        self.module_page = QWidget()
-        module_layout = QVBoxLayout(self.module_page)
-        module_layout.setAlignment(Qt.AlignCenter)
-        module_label = QLabel("Module")
-        module_label.setAlignment(Qt.AlignCenter)
+        self.module_page = QWidget()  # Container für Module
+        module_layout = QVBoxLayout(self.module_page)  # Layout für Module-Seite
+        module_layout.setAlignment(Qt.AlignCenter)  # Zentriere alles vertikal und horizontal
+        module_label = QLabel("Module")  # Überschrift
+        module_label.setAlignment(Qt.AlignCenter)  # Zentriert
         module_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 24px;")
         module_layout.addWidget(module_label)
-        add_btn = QPushButton("Modul hinzufügen")
-        add_btn.setMinimumHeight(40)
-        add_btn.setStyleSheet("font-size: 16px; margin: 8px 0;")
-        module_layout.addWidget(add_btn)
-        back_btn_m = QPushButton("Zurück")
-        back_btn_m.setMinimumHeight(40)
-        back_btn_m.setStyleSheet("font-size: 16px; margin: 24px 0;")
-        module_layout.addWidget(back_btn_m)
-
+        module_layout.addStretch(1)  # Abstand nach unten
+        
         # Seiten zum Stack hinzufügen
         self.stack.addWidget(self.menu_page)         # Index 0: Hauptmenü
         self.stack.addWidget(self.settings_page)     # Index 1: Einstellungen
         self.stack.addWidget(self.reporting_page)    # Index 2: Berichte
         self.stack.addWidget(self.module_page)       # Index 3: Module
+        self.stack.addWidget(self.print_report_page) # Index 4: Report als PDF drucken
+        self.stack.addWidget(self.status_page)       # Index 5: Anzeige des aktuellen Status
         self.stack.setCurrentWidget(self.menu_page)  # Starte mit Hauptmenü
 
         # Navigation: Buttons verbinden
@@ -115,45 +152,7 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         modules_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.module_page))
         back_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
         back_btn_r.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
-        back_btn_m.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
-
-        # Einstellungen-Menü als eigene Seite mit Buttons
-        self.settings_page = QWidget()  # Widget für die Einstellungen-Seite
-        settings_layout = QVBoxLayout(self.settings_page)  # Vertikales Layout für die Einstellungen
-        settings_layout.setAlignment(Qt.AlignHCenter)  # Zentriere die Buttons horizontal
-        # Überschrift für das Einstellungsmenü
-        settings_label = QLabel("Einstellungen")  # Überschrift
-        settings_label.setAlignment(Qt.AlignCenter)  # Zentriert
-        settings_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 16px;")  # Stil
-        settings_layout.addWidget(settings_label)  # Überschrift hinzufügen
-        # Menü-Buttons für verschiedene Einstellungsbereiche
-        general_btn = QPushButton("Allgemein")  # Button für allgemeine Einstellungen
-        user_btn = QPushButton("Benutzer")  # Button für Benutzer-Einstellungen
-        back_btn = QPushButton("Zurück")  # Button zum Zurückkehren ins Hauptmenü
-        settings_layout.addWidget(general_btn)  # Füge Button für Allgemein hinzu
-        settings_layout.addWidget(user_btn)  # Füge Button für Benutzer hinzu
-        settings_layout.addWidget(back_btn)  # Füge Zurück-Button hinzu
-        # Logik für Zurück-Button: Wechsel ins Hauptmenü (Settings als Startseite)
-        back_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))  # Zurück ins Hauptmenü
-        # Die Seite für das Hauptmenü referenzieren (siehe unten)
-
-        # Reporting-Seite erstellen
-        self.reporting_page = QWidget()  # Container für Berichte
-        reporting_layout = QVBoxLayout(self.reporting_page)  # Layout für Reporting-Seite
-        reporting_layout.addWidget(QLabel("Berichte-Übersicht"))  # Platzhalter-Text
-        # Module-Seite erstellen
-        self.module_page = QWidget()  # Container für Module
-        module_layout = QVBoxLayout(self.module_page)  # Layout für Module-Seite
-        module_layout.addWidget(QLabel("Module-Übersicht"))  # Platzhalter-Text
-        # Seiten zum Stack hinzufügen
-        self.stack.addWidget(self.settings_page)
-        self.stack.addWidget(self.reporting_page)
-        self.stack.addWidget(self.module_page)
-        # Standardseite festlegen
-        self.stack.setCurrentWidget(self.settings_page)
-        # Button-Klicks mit Seitenwechsel verbinden
-        settings_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.settings_page))
-        reporting_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.reporting_page))
-        modules_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.module_page))
-        # Gestapeltes Widget ins Hauptlayout einfügen
-        self.layout.addWidget(self.stack)
+        print_report_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.print_report_page))
+        status_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.status_page))
+        back_btn_pr.clicked.connect(lambda: self.stack.setCurrentWidget(self.reporting_page))
+        back_btn_s.clicked.connect(lambda: self.stack.setCurrentWidget(self.reporting_page))
