@@ -1,7 +1,7 @@
 <map version="freeplane 1.12.1">
 <!--To view this file, download free mind mapping software Freeplane from https://www.freeplane.org -->
 <node TEXT="T.E.A.C.H. GUI Navigation" LOCALIZED_STYLE_REF="AutomaticLayout.level.root" FOLDED="false" ID="ID_1090958577" CREATED="1409300609620" MODIFIED="1748351670670"><hook NAME="MapStyle" background="#2e3440ff" zoom="0.9090909">
-    <properties fit_to_viewport="false" show_icon_for_attributes="true" show_note_icons="true" show_tags="UNDER_NODES" edgeColorConfiguration="#808080ff,#ff0000ff,#0000ffff,#00ff00ff,#ff00ffff,#00ffffff,#7c0000ff,#00007cff,#007c00ff,#7c007cff,#007c7cff,#7c7c00ff" show_icons="BESIDE_NODES" associatedTemplateLocation="template:/dark_nord_template.mm"/>
+    <properties show_icon_for_attributes="true" fit_to_viewport="false" show_note_icons="true" show_tags="UNDER_NODES" edgeColorConfiguration="#808080ff,#ff0000ff,#0000ffff,#00ff00ff,#ff00ffff,#00ffffff,#7c0000ff,#00007cff,#007c00ff,#7c007cff,#007c7cff,#7c7c00ff" associatedTemplateLocation="template:/dark_nord_template.mm" show_icons="BESIDE_NODES"/>
     <tags category_separator="::"/>
 
 <map_styles>
@@ -86,6 +86,7 @@
 <hook NAME="FreeNode"/>
 <node TEXT="Querschnittliche Funktionen wie Einstellungen, Authentifizierung oder KI-Services werden am besten zentral implementiert und von allen Modulen genutzt. So bleibt das System modular, flexibel und leicht wartbar" ID="ID_1450507656" CREATED="1748351708778" MODIFIED="1748351734683"/>
 <node TEXT="Diese Trennung fördert Wiederverwendbarkeit und verhindert doppelte Implementierungen." ID="ID_1456539682" CREATED="1748351745871" MODIFIED="1748351747142"/>
+<node TEXT="Einheitliches Design: Mindesthöhe 48, Schriftgröße 20px, Margin 16px 0" ID="ID_451866684" CREATED="1748364178568" MODIFIED="1748364186131"/>
 </node>
 <node TEXT="Hauptmenü (MainMenu)" POSITION="bottom_or_right" ID="ID_1297386687" CREATED="1748292230915" MODIFIED="1748351677737" HGAP_QUANTITY="80.75 pt" VSHIFT_QUANTITY="-3.75 pt">
 <node TEXT="Einstellungen (SettingsMenu)" ID="ID_77239798" CREATED="1748292237410" MODIFIED="1748347861738" VSHIFT_QUANTITY="-106.5 pt">

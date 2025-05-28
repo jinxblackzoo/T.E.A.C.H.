@@ -22,12 +22,12 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
     # BUTTON_STYLE definiert das Aussehen aller Buttons
     BUTTON_STYLE = """
         QPushButton {
-            font-size: 25px;
-            min-height: 80px;
-            min-width: 80px;
+            font-size: 20px;
+            min-height: 60px;
+            min-width: 60px;
             margin: 10px 10;
             padding: 10px 10px;
-            background-color: g#62DFF5;
+            background-color: #62DFF5;
             border-radius: 16px; 
         }
     """
@@ -46,13 +46,13 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
     # - Pfeil als Text: "←"
     BACK_BUTTON_STYLE = """
         QPushButton {
-            font-size: 30px;
-            min-height: 60px;
-            min-width: 80px;
+            font-size: 15px;
+            min-height: 20px;
+            min-width: 20px;
             margin: 10px 0;
             padding: 10px 10px;
             background-color: #62B0F5;
-            border-radius: 24px;
+            border-radius: 15px;
         }
     """
     # background-color: helles Grau für Zurück-Buttons
