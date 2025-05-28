@@ -27,7 +27,7 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
             min-width: 60px;
             margin: 10px 10;
             padding: 10px 10px;
-            background-color: #62DFF5;
+            background-color: #990099;
             border-radius: 16px; 
         }
     """
