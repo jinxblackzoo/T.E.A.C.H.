@@ -39,7 +39,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
 # TEACH-interne Basisklasse
-from ..core.module import TEACHModule
+from core.module import TEACHModule
 
 # ---------------------------------------------------------------------------
 # Datenbank-Setup
