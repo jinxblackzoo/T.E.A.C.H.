@@ -48,6 +48,13 @@ T.E.A.C.H. unterstützt die Verwendung lokaler KI-Modelle (z.B. GPT4All, Ollama)
 
 > **Hinweis**: Die Kernfunktionen von T.E.A.C.H. funktionieren auch ohne KI-Unterstützung.
 
+## 📑 Reporting
+
+- Übersichtliche Reports pro Modul
+- Report-Inhalte werden vom jeweiligen Modul bereitgestellt
+- PDF-Export aller Reports mit Zeitstempel möglich
+- Keine Speicherung der Reports in der Cloud
+
 ## 🚀 Installation
 
 ### Voraussetzungen

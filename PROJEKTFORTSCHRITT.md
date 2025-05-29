@@ -22,6 +22,7 @@
 - [ ] KLAR Karteikartentrainer-Modul entwickeln
 - [ ] Dokumentation vervollständigen
 - [ ] UI/UX optimieren
+- [ ] Reporting-Funktion für modulare Reports und PDF-Export
 - [ ] KI-Schnittstelle in alle Module integrieren
 - [ ] Konfigurierbarkeit verschiedener LLM-Backends
 - [ ] Einheitliche Fehler- und Ausfallbehandlung
