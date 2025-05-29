@@ -1,5 +1,5 @@
 # Datei: src/core/app.py – Hauptanwendung mit Tab-basierter Navigation
-from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QPushButton, QStackedWidget  # Import Qt-Widgets und Button-Layout mit StackedWidget
+from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QPushButton, QStackedWidget, QTextEdit, QScrollArea
 from PySide6.QtCore import Qt  # Import Qt-Kernfunktionen fürs Alignment
 from .module import TEACHModule  # Import der Basisklasse für Module
 
@@ -204,38 +204,40 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
 
         # Reporting-Seite gemäß .mm-Vorgabe
         self.reporting_page = QWidget()
-        reporting_layout = QVBoxLayout(self.reporting_page)
-        reporting_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        reporting_outer_layout = QVBoxLayout(self.reporting_page)
+        reporting_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
+        reporting_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+        reporting_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
+        
+        # Container für zentrierten Inhalt
+        reporting_container = QWidget()
+        reporting_layout = QVBoxLayout(reporting_container)
+        reporting_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
         reporting_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
-
-        reporting_label = QLabel("Reporting Übersicht")
+        reporting_outer_layout.addWidget(reporting_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        
+        # Überschrift für Reporting
+        reporting_label = QLabel("Reporting")
         reporting_label.setAlignment(Qt.AlignCenter)
         reporting_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         reporting_layout.addWidget(reporting_label)
-
-        # Modul-Report-Buttons dynamisch erzeugen
-        self.module_instances = []  # Muss später mit echten Modulen gefüllt werden
-        # Beispiel: self.module_instances = [voll_modul, mut_modul, klar_modul]
-        for modul in self.module_instances:
-            btn = self.create_button(f"Report für {modul.name} anzeigen")
-            btn.clicked.connect(lambda _, m=modul: self.show_module_report(m))
-            reporting_layout.addWidget(btn)
-
-        # PDF-Export-Button (Platzhalter)
+        # Button für Report als PDF drucken
+        # Reporting-Menü-Buttons mit zentraler Button-Funktion
         print_report_btn = self.create_button("Report als PDF drucken")
         reporting_layout.addWidget(print_report_btn)
+        status_btn = self.create_button("Status anzeigen")
+        reporting_layout.addWidget(status_btn)
 
-        # Zurück-Button
+        # Zurück-Button zum Hauptmenü
+        # Zurück-Button mit zentraler Button-Funktion
         back_btn_reporting = self.create_button(style="back")
         reporting_layout.addWidget(back_btn_reporting)
-
         # Platzhalterseiten für die beiden Unterseiten
         # PDF-Druckseite
         self.print_report_page = QWidget()
         print_report_outer_layout = QVBoxLayout(self.print_report_page)
         print_report_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
         print_report_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
-
         print_report_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
         
         print_report_container = QWidget()
@@ -254,20 +256,17 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         
         # Statusseite
         self.status_page = QWidget()
-        status_outer_layout = QVBoxLayout(self.status_page)
-        status_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
-        status_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
-        status_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
-        
-        status_container = QWidget()
-        status_layout = QVBoxLayout(status_container)
+        status_layout = QVBoxLayout(self.status_page)
         status_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
-        status_outer_layout.addWidget(status_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
-        
+        status_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
         status_label = QLabel("Anzeige des aktuellen Status")
         status_label.setAlignment(Qt.AlignCenter)
         status_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         status_layout.addWidget(status_label)
+        # ScrollArea zur Anzeige von Modul-Reports
+        self.report_scroll = QScrollArea()
+        self.report_scroll.setWidgetResizable(True)
+        status_layout.addWidget(self.report_scroll)
         
         # Zurück-Button mit zentraler Button-Funktion
         back_btn_s = self.create_button(style="back")
@@ -371,6 +370,11 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         klar_layout.addWidget(back_btn_klar)
 
         
+        # ------------------------------------
+        # Modul-Liste für Reporting
+        # ------------------------------------
+        self.modules: list[TEACHModule] = []  # Wird später per register_module() gefüllt
+        
         # Seiten zum Stack hinzufügen
         self.stack.addWidget(self.menu_page)         # Index 0: Hauptmenü
         self.stack.addWidget(self.settings_page)     # Index 1: Einstellungen
@@ -397,6 +401,7 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         
         # Reporting-Buttons
         print_report_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.print_report_page))
+        status_btn.clicked.connect(lambda: (self.refresh_reports(), self.stack.setCurrentWidget(self.status_page)))
         back_btn_reporting.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
         
         # Modul-Buttons
@@ -413,3 +418,34 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         # Zurück-Buttons in den Reporting-Seiten
         back_btn_pr.clicked.connect(lambda: self.stack.setCurrentWidget(self.reporting_page))
         back_btn_s.clicked.connect(lambda: self.stack.setCurrentWidget(self.reporting_page))
+
+    # ------------------------------------------------------------
+    # Reporting-Hilfsfunktionen
+    # ------------------------------------------------------------
+    def register_module(self, module: TEACHModule):
+        """Registriert ein Modul für Reporting und andere Funktionen."""
+        self.modules.append(module)
+
+    def refresh_reports(self):
+        """Aktualisiert die Report-Anzeige für alle registrierten Module."""
+        container = QWidget()
+        lay = QVBoxLayout(container)
+        lay.setAlignment(Qt.AlignTop)
+        lay.setSpacing(15)
+        if not self.modules:
+            lay.addWidget(QLabel("Keine Module registriert."))
+        for mod in self.modules:
+            try:
+                data = mod.get_report()
+            except Exception as exc:
+                data = {"name": getattr(mod, "name", "Unbekannt"), "error": str(exc)}
+            title = QLabel(f"Report: {data.get('name', 'Modul')}")
+            title.setStyleSheet("font-weight: bold; font-size: 18px;")
+            lay.addWidget(title)
+            text = QTextEdit()
+            text.setReadOnly(True)
+            text.setPlainText(str(data))
+            text.setFixedHeight(120)
+            lay.addWidget(text)
+        lay.addStretch(1)
+        self.report_scroll.setWidget(container)
