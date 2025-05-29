@@ -1,7 +1,7 @@
 # Datei: src/core/app.py – Hauptanwendung mit Tab-basierter Navigation
 from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QPushButton, QStackedWidget, QTextEdit, QScrollArea, QFileDialog
 from PySide6.QtCore import Qt  # Import Qt-Kernfunktionen fürs Alignment
-from PySide6.QtGui import QPdfWriter, QTextDocument, QMarginsF
+from PySide6.QtGui import QPdfWriter, QTextDocument, QPageLayout
 from datetime import datetime
 import json
 from .module import TEACHModule  # Import der Basisklasse für Module
@@ -464,7 +464,7 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         if not path:
             return  # Abbruch
         writer = QPdfWriter(path)
-        writer.setPageMargins(QMarginsF(15, 15, 15, 15))
+        writer.setPageMargins(15, 15, 15, 15, QPageLayout.Millimeter)
         doc = QTextDocument()
         html_parts = []
         for mod in self.modules:
