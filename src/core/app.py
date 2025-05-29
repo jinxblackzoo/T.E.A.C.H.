@@ -397,7 +397,6 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         
         # Reporting-Buttons
         print_report_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.print_report_page))
-        status_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.status_page))
         back_btn_reporting.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
         
         # Modul-Buttons
