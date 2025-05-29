@@ -204,40 +204,38 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
 
         # Reporting-Seite gemäß .mm-Vorgabe
         self.reporting_page = QWidget()
-        reporting_outer_layout = QVBoxLayout(self.reporting_page)
-        reporting_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
-        reporting_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
-        reporting_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
-        
-        # Container für zentrierten Inhalt
-        reporting_container = QWidget()
-        reporting_layout = QVBoxLayout(reporting_container)
-        reporting_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        reporting_layout = QVBoxLayout(self.reporting_page)
+        reporting_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
         reporting_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
-        reporting_outer_layout.addWidget(reporting_container, alignment=Qt.AlignTop | Qt.AlignHCenter)
-        
-        # Überschrift für Reporting
-        reporting_label = QLabel("Reporting")
+
+        reporting_label = QLabel("Reporting Übersicht")
         reporting_label.setAlignment(Qt.AlignCenter)
         reporting_label.setStyleSheet(self.LAYOUT_STYLE['title_style'])
         reporting_layout.addWidget(reporting_label)
-        # Button für Report als PDF drucken
-        # Reporting-Menü-Buttons mit zentraler Button-Funktion
+
+        # Modul-Report-Buttons dynamisch erzeugen
+        self.module_instances = []  # Muss später mit echten Modulen gefüllt werden
+        # Beispiel: self.module_instances = [voll_modul, mut_modul, klar_modul]
+        for modul in self.module_instances:
+            btn = self.create_button(f"Report für {modul.name} anzeigen")
+            btn.clicked.connect(lambda _, m=modul: self.show_module_report(m))
+            reporting_layout.addWidget(btn)
+
+        # PDF-Export-Button (Platzhalter)
         print_report_btn = self.create_button("Report als PDF drucken")
         reporting_layout.addWidget(print_report_btn)
-        status_btn = self.create_button("Status anzeigen")
-        reporting_layout.addWidget(status_btn)
 
-        # Zurück-Button zum Hauptmenü
-        # Zurück-Button mit zentraler Button-Funktion
+        # Zurück-Button
         back_btn_reporting = self.create_button(style="back")
         reporting_layout.addWidget(back_btn_reporting)
+
         # Platzhalterseiten für die beiden Unterseiten
         # PDF-Druckseite
         self.print_report_page = QWidget()
         print_report_outer_layout = QVBoxLayout(self.print_report_page)
         print_report_outer_layout.setAlignment(self.LAYOUT_STYLE['alignment'])
         print_report_outer_layout.setSpacing(self.LAYOUT_STYLE['spacing'])
+
         print_report_outer_layout.setContentsMargins(*self.LAYOUT_STYLE['margins'])
         
         print_report_container = QWidget()

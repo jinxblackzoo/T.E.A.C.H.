@@ -15,43 +15,58 @@
 - [x] Mindmap-Bereinigung (Kompatibilität Freeplane/Freemind)
 
 ## 🔄 In Arbeit
-- [ ] Hauptfenster und Navigation (TEACH, ohne Module) implementieren
-- [ ] Modul-Schnittstellen und Basisklassen finalisieren
-- [ ] Module Schritt für Schritt einbinden
-- [ ] Beispielmodul anlegen und testen
-- [ ] Automatisierte Tests für Kernlogik
-- [ ] Technische Dokumentation vervollständigen
-- [ ] UI/UX-Design abstimmen
-- [ ] README und Entwicklerdokumentation aktualisieren
+- [x] Hauptfenster und Navigation implementieren
+- [x] Modul-Schnittstellen und Basisklassen finalisieren
+- [ ] VOLL Vokabeltrainer-Modul entwickeln
+- [ ] MUT Einheitentrainer-Modul entwickeln
+- [ ] KLAR Karteikartentrainer-Modul entwickeln
+- [ ] Dokumentation vervollständigen
+- [ ] UI/UX optimieren
+- [ ] KI-Schnittstelle in alle Module integrieren
+- [ ] Konfigurierbarkeit verschiedener LLM-Backends
+- [ ] Einheitliche Fehler- und Ausfallbehandlung
+- [ ] Option zur KI-Deaktivierung in den Einstellungen
+- [ ] Entwickler- und Nutzer-Dokumentation zur KI
+- [ ] Erweiterte Analyse- und Lernfortschrittsfunktionen
+
+
+
+## Modul VOLL
+
+## Modul MUT
+
+## Modul KLAR
+
+
 
 ## 🤖 KI-Integration
+### Implementierte Funktionen
+- [x] Zentrale LLM-Schnittstelle
+- [x] Unterstützung für lokale KI-Modelle
+- [x] Pädagogische Steuerung über Prompts
+- [x] Fehlerbehandlung
 
-### Kernfunktionen
-1. **Dynamische Modellverwaltung**
-   - Austauschbare KI-Modelle (z.B. GPT, LLaMA, etc.)
-   - Plugin-System für Modell-Adapter
-   - Versionierung und Updates von Modellen
-
-2. **Nachhilfe- & Erklärfunktion**
-   - Kontextsensitive Hilfestellungen
-   - Regelsystem zur Steuerung der Antworten
-   - Anpassbare Lernniveaus
-
-3. **Dokumentenverarbeitung**
-   - PDF-Import mit Textextraktion
-   - Erstellung von Lerninhalten
-   - Wissensdatenbank
-
-4. **Zahlungsintegration**
-   - API-Schnittstelle für kostenpflichtige Modelle
-   - Abrechnungssystem
-   - Nutzungsüberwachung
+### In Entwicklung
+- [ ] Verbesserte Lernfortschrittsanalyse
+- [ ] Anpassbare Lernpfade
+- [ ] Erweiterte KI-Interaktionen
 
 ## 🏗️ Architektur-Entscheidungen
+
+### Reporting Funktion
+- Schnittstelle von TEACH zu jedem Modul
+- Was reportet wird, wird im Modul festgelegt - TEACH soll nur anzeigen und als PDF speichern können
+- UI Navigation: Reporting - Report als PDF drucken <-> Klick soll PDF-Report für alle Module erzeugen wie unter "Status anzeigen"
+                           - Status anzeigen <-> Klick zeigt Seite mit den Reportparametern je nach Modul sortiert nach Modul
+
 ### Modul-System
 - Jedes Modul ist ein eigenes Python-Paket
 - Dynamisches Laden zur Laufzeit
 - Klare Schnittstellen für Konfiguration, Datenzugriff und UI
+- Schnittstelle zur Reporting Funktion
+- Eigene Regelerstellung für die KI Nutzung (im Code, nicht veränderbar vom Nutzer im Programm)
+- Modul muss auch ohne KI und offline funktionieren
+
 
 ### Datenhaltung
 - **Pro Modul eine SQLite-Datei**

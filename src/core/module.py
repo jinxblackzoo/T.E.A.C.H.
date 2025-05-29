@@ -5,6 +5,19 @@ class TEACHModule(QWidget):
     
     Jedes Modul muss von dieser Klasse erben und die erforderlichen Methoden implementieren.
     """
+
+    def get_report(self) -> dict:
+        """
+        Liefert einen Report als Dictionary mit den wichtigsten Status-/Fortschrittsdaten des Moduls.
+        Muss von jedem Modul überschrieben werden.
+        Rückgabeformat-Beispiel:
+        {
+            "name": "Modulname",
+            "status": "OK",
+            "details": {...}
+        }
+        """
+        raise NotImplementedError("Das Modul muss die Methode get_report() implementieren.")
     
     def __init__(self, parent=None):
         """Initialisiert das Modul.

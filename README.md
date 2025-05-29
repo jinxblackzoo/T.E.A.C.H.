@@ -31,11 +31,22 @@ Die Anwendung folgt einem modularen Ansatz:
 - **VOLL**: Virtuelles Online-Lernlabor
 - **MUT**: Modulares Unterrichts-Tool
 
-### KI-Integration (geplant)
-- Dynamische Modellverwaltung
-- Kontextsensitive Hilfestellungen
-- Dokumentenverarbeitung
-- Anpassbare Lernniveaus
+## 🤖 KI-Integration
+
+T.E.A.C.H. unterstützt die Verwendung lokaler KI-Modelle (z.B. GPT4All, Ollama) für intelligente Lernhilfen. Die KI-Funktionen sind optional und laufen komplett lokal auf Ihrem Rechner.
+
+### Wichtige Informationen:
+- **Lokale Ausführung**: Alle KI-Berechnungen finden auf Ihrem eigenen Gerät statt
+- **Keine Cloud-Abhängigkeit**: Ihre Daten bleiben privat und werden nicht an Dritte gesendet
+- **Flexible Modelle**: Nutzen Sie verschiedene Open-Source-Sprachmodelle
+- **Pädagogische Steuerung**: Jedes Modul definiert eigene Regeln für die KI-Interaktion
+
+### Voraussetzungen
+- Ein laufender KI-Server (z.B. GPT4All Desktop, Ollama)
+- Mindestens 8GB RAM empfohlen
+- Internetverbindung nur zum Herunterladen der Modelle nötig
+
+> **Hinweis**: Die Kernfunktionen von T.E.A.C.H. funktionieren auch ohne KI-Unterstützung.
 
 ## 🚀 Installation
 
