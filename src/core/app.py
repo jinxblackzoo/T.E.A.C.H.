@@ -1,6 +1,9 @@
 # Datei: src/core/app.py – Hauptanwendung mit Tab-basierter Navigation
-from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QPushButton, QStackedWidget, QTextEdit, QScrollArea
+from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QPushButton, QStackedWidget, QTextEdit, QScrollArea, QFileDialog
 from PySide6.QtCore import Qt  # Import Qt-Kernfunktionen fürs Alignment
+from PySide6.QtGui import QPdfWriter, QTextDocument, QMarginsF
+from datetime import datetime
+import json
 from .module import TEACHModule  # Import der Basisklasse für Module
 
 class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWindow
@@ -400,7 +403,7 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
         back_btn_ai.clicked.connect(lambda: self.stack.setCurrentWidget(self.settings_page))
         
         # Reporting-Buttons
-        print_report_btn.clicked.connect(lambda: self.stack.setCurrentWidget(self.print_report_page))
+        print_report_btn.clicked.connect(self.generate_pdf_report)
         status_btn.clicked.connect(lambda: (self.refresh_reports(), self.stack.setCurrentWidget(self.status_page)))
         back_btn_reporting.clicked.connect(lambda: self.stack.setCurrentWidget(self.menu_page))
         
@@ -449,3 +452,28 @@ class TEACH(QMainWindow):  # Definition der Hauptfensterklasse, erbt von QMainWi
             lay.addWidget(text)
         lay.addStretch(1)
         self.report_scroll.setWidget(container)
+
+    def generate_pdf_report(self):
+        """Erstellt einen PDF-Report aller Module und speichert ihn an einem vom Nutzer gewählten Ort."""
+        if not self.modules:
+            return  # Nichts zu drucken
+        # Standarddateiname im Format DD-MM-YYYY_HH-MM_TEACH.pdf
+        ts = datetime.now().strftime("%d-%m-%Y_%H-%M")
+        default_name = f"{ts}_TEACH.pdf"
+        path, _ = QFileDialog.getSaveFileName(self, "PDF speichern", default_name, "PDF Dateien (*.pdf)")
+        if not path:
+            return  # Abbruch
+        writer = QPdfWriter(path)
+        writer.setPageMargins(QMarginsF(15, 15, 15, 15))
+        doc = QTextDocument()
+        html_parts = []
+        for mod in self.modules:
+            try:
+                data = mod.get_report()
+            except Exception as exc:
+                data = {"name": getattr(mod, "name", "Unbekannt"), "error": str(exc)}
+            name = data.get("name", "Modul")
+            details = json.dumps(data, indent=2, ensure_ascii=False)
+            html_parts.append(f"<h2>{name}</h2><pre>{details}</pre>")
+        doc.setHtml("\n".join(html_parts))
+        doc.print(writer)
