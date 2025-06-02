@@ -32,7 +32,7 @@ from datetime import datetime  # Zeitstempel für Statistiken
 # Drittanbieter: PySide6 für die Benutzeroberfläche
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QPushButton, QMessageBox,
-    QListWidget, QHBoxLayout, QDialog, QInputDialog,
+    QListWidget, QHBoxLayout, QInputDialog,
     QLineEdit, QTextEdit, QFileDialog
 )
 from PySide6.QtCore import Qt  # Layout-Konstanten
@@ -454,26 +454,26 @@ class KLARModule(TEACHModule):
     # ---------------------------------------------------------------------
     def start_learning(self):
         """Startet eine Lernsession im Dialog."""
-        dlg = LearningDialog(self)
-        dlg.exec()
+        # Entferne Dialog und verwende Widget direkt im Hauptfenster
+        pass  # TODO: Implementierung für Widget-basierte Lernsession
 
     # ---------------------------------------------------------------------
     # Datenbankverwaltung – Dialog öffnen
     # ---------------------------------------------------------------------
     def open_db_manager(self):
         """Öffnet den Dialog zum Verwalten der Karteikarten-Datenbanken."""
-        dlg = DatabaseManagerDialog(self)
-        dlg.exec()
+        # Entferne Dialog und verwende Widget direkt im Hauptfenster
+        pass  # TODO: Implementierung für Widget-basierte Datenbankverwaltung
 
     def open_card_manager(self):
         """Öffnet den Karteneditor-Dialog."""
-        dlg = FlashcardManagerDialog(self)
-        dlg.exec()
+        # Entferne Dialog und verwende Widget direkt im Hauptfenster
+        pass  # TODO: Implementierung für Widget-basierte Kartenverwaltung
 
     def open_stats(self):
         """Öffnet Statistik-Dialog."""
-        dlg = StatsDialog(self)
-        dlg.exec()
+        # Entferne Dialog und verwende Widget direkt im Hauptfenster
+        pass  # TODO: Implementierung für Widget-basierte Statistiken
 
     # -----------------------------------------------------------------
     # Reporting-Schnittstelle
@@ -516,7 +516,7 @@ class KLARModule(TEACHModule):
 # ---------------------------------------------------------------------------
 # Dialogklasse für Datenbankverwaltung
 # ---------------------------------------------------------------------------
-class DatabaseManagerDialog(QDialog):
+class DatabaseManagerDialog(QWidget):
     """UI-Dialog zum Anlegen, Auswählen und Löschen von DBs."""
 
     def __init__(self, parent: KLARModule):
@@ -623,7 +623,7 @@ class DatabaseManagerDialog(QDialog):
 # ---------------------------------------------------------------------------
 # Dialogklasse für Kartenverwaltung
 # ---------------------------------------------------------------------------
-class FlashcardManagerDialog(QDialog):
+class FlashcardManagerDialog(QWidget):
     """Dialog zum Anlegen, Bearbeiten und Löschen von Flashcards."""
 
     def __init__(self, parent: KLARModule):
@@ -669,22 +669,16 @@ class FlashcardManagerDialog(QDialog):
 
     # --------------------------- Slots -----------------------------------
     def _add(self):
-        dlg = FlashcardEditorDialog(self)
-        if dlg.exec():
-            data = dlg.get_data()
-            _db_mgr.create_flashcard(**data)
-            self._refresh()
+        self.editor = FlashcardEditorDialog(self)
+        self.editor.show()
 
     def _edit(self):
         card = self._get_current_card()
         if not card:
             QMessageBox.warning(self, "Keine Auswahl", "Bitte eine Karte wählen.")
             return
-        dlg = FlashcardEditorDialog(self, card)
-        if dlg.exec():
-            data = dlg.get_data()
-            _db_mgr.update_flashcard(card, **data)
-            self._refresh()
+        self.editor = FlashcardEditorDialog(self, card)
+        self.editor.show()
 
     def _delete(self):
         card = self._get_current_card()
@@ -700,7 +694,7 @@ class FlashcardManagerDialog(QDialog):
 # ---------------------------------------------------------------------------
 # Dialog zum Bearbeiten einer einzelnen Karte
 # ---------------------------------------------------------------------------
-class FlashcardEditorDialog(QDialog):
+class FlashcardEditorDialog(QWidget):
     """Dialog zum Hinzufügen oder Bearbeiten einer Karte."""
 
     def __init__(self, parent: QWidget, card: Flashcard | None = None):
@@ -743,8 +737,8 @@ class FlashcardEditorDialog(QDialog):
         btn_row.addWidget(ok_btn)
         btn_row.addWidget(cancel_btn)
 
-        ok_btn.clicked.connect(self.accept)
-        cancel_btn.clicked.connect(self.reject)
+        ok_btn.clicked.connect(self._save)
+        cancel_btn.clicked.connect(self.close)
 
         # Wenn Karte vorhanden, Felder füllen
         if card:
@@ -760,20 +754,19 @@ class FlashcardEditorDialog(QDialog):
         if file:
             self.image_path_edit.setText(file)
 
-    def get_data(self) -> dict:
+    def _save(self):
         keywords = [kw.strip() for kw in self.keyword_edit.text().split(",") if kw.strip()]
-        return {
-            "question": self.question_edit.text().strip(),
-            "answer": self.answer_edit.toPlainText().strip(),
-            "keywords": keywords,
-            "image_path": self.image_path_edit.text().strip() or None,
-        }
+        if self.card:
+            _db_mgr.update_flashcard(self.card, self.question_edit.text().strip(), self.answer_edit.toPlainText().strip(), keywords, self.image_path_edit.text().strip() or None)
+        else:
+            _db_mgr.create_flashcard(self.question_edit.text().strip(), self.answer_edit.toPlainText().strip(), keywords, self.image_path_edit.text().strip() or None)
+        self.close()
 
 
 # ---------------------------------------------------------------------------
 # Dialog für Lernmodus
 # ---------------------------------------------------------------------------
-class LearningDialog(QDialog):
+class LearningDialog(QWidget):
     """Einfacher Lern-Dialog mit Level-Logik."""
 
     def __init__(self, parent: KLARModule):
@@ -897,7 +890,7 @@ class LearningDialog(QDialog):
             self,
             "Fertig",
             f"Session beendet. Richtig: {self.correct_count}/{len(self.cards)}")
-        self.accept()
+        self.close()
 
     def _show_hint(self):
         """Fragt das LLM nach einem Tipp für die aktuelle Frage."""
@@ -911,7 +904,7 @@ class LearningDialog(QDialog):
 # ---------------------------------------------------------------------------
 # Dialog für Statistiken
 # ---------------------------------------------------------------------------
-class StatsDialog(QDialog):
+class StatsDialog(QWidget):
     """Zeigt aggregierte Lernstatistiken und Historie."""
 
     def __init__(self, parent: KLARModule):
