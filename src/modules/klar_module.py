@@ -39,7 +39,7 @@ from PySide6.QtCore import Qt  # Layout-Konstanten
 from PySide6.QtGui import QPixmap  # Bilder anzeigen
 
 # Drittanbieter: SQLAlchemy für ORM-basierte Datenhaltung
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Float, func
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Float, func, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
@@ -166,19 +166,19 @@ class KLARDBManager:
         try:
             # Prüfe, ob image_path Spalte in flashcards Tabelle existiert
             with self.engine.connect() as conn:
-                # Hole Tabellen-Info
-                result = conn.execute("PRAGMA table_info(flashcards)")
+                # Hole Tabellen-Info mit text() für Raw SQL
+                result = conn.execute(text("PRAGMA table_info(flashcards)"))
                 columns = [row[1] for row in result.fetchall()]
                 
                 # Füge fehlende Spalten hinzu
                 if 'image_path' not in columns:
-                    conn.execute("ALTER TABLE flashcards ADD COLUMN image_path TEXT")
+                    conn.execute(text("ALTER TABLE flashcards ADD COLUMN image_path TEXT"))
                     conn.commit()
                     print("Migration: image_path Spalte zur flashcards Tabelle hinzugefügt")
                 
                 # Weitere Migrationen können hier hinzugefügt werden
                 if 'last_practiced' not in columns:
-                    conn.execute("ALTER TABLE flashcards ADD COLUMN last_practiced DATETIME")
+                    conn.execute(text("ALTER TABLE flashcards ADD COLUMN last_practiced DATETIME"))
                     conn.commit()
                     print("Migration: last_practiced Spalte zur flashcards Tabelle hinzugefügt")
                     
