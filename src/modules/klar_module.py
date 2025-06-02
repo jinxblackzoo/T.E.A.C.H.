@@ -39,7 +39,7 @@ from PySide6.QtCore import Qt  # Layout-Konstanten
 from PySide6.QtGui import QPixmap  # Bilder anzeigen
 
 # Drittanbieter: SQLAlchemy für ORM-basierte Datenhaltung
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Float
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Float, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
@@ -139,10 +139,20 @@ class KLARDBManager:
         self.data_dir = os.path.join(data_home, "teach", "klar")
         os.makedirs(self.data_dir, exist_ok=True)
 
-        # Einzelne zentralisierte Datenbank-Datei (später evtl. mehrere Decks)
-        self.db_path = os.path.join(self.data_dir, "klar.db")
+        # Datei, in der der Name der aktiven Datenbank persistiert wird
+        self.active_db_file = os.path.join(self.data_dir, ".active_db")
 
-        # Engine & SessionFactory anlegen
+        # Aktive DB bestimmen bzw. auf Standard zurückfallen
+        if os.path.exists(self.active_db_file):
+            with open(self.active_db_file, "r", encoding="utf-8") as fh:
+                self.active_db = fh.read().strip() or "klar.db"
+        else:
+            self.active_db = "klar.db"
+
+        # Pfad zur aktiven DB
+        self.db_path = os.path.join(self.data_dir, self.active_db)
+
+        # Engine & SessionFactory anlegen/aktualisieren
         self.engine = create_engine(f"sqlite:///{self.db_path}", echo=False)
         Base.metadata.create_all(self.engine)
         self.SessionLocal = sessionmaker(bind=self.engine)
@@ -155,7 +165,7 @@ class KLARDBManager:
         return self.SessionLocal()
 
     def get_stats(self) -> dict:
-        """Aggregiert einfache Fortschritts-Statistiken für den Report."""
+        """Aggregiert Fortschritts-Statistiken effizient mittels Aggregat-Funktionen."""
         session = self.get_session()
         try:
             total = session.query(Flashcard).count()
@@ -170,14 +180,20 @@ class KLARDBManager:
                 .order_by(StudySession.date.desc())
                 .first()
             )
-            avg_accuracy = None
-            if session_count:
-                total_cards_practiced = session.query(StudySession.cards_practiced).all()
-                total_correct = session.query(StudySession.correct_answers).all()
-                total_cards_practiced = sum(x[0] for x in total_cards_practiced)
-                total_correct = sum(x[0] for x in total_correct)
-                if total_cards_practiced:
-                    avg_accuracy = round(total_correct / total_cards_practiced * 100, 2)
+
+            # Aggregierte Genauigkeit
+            total_cards_practiced, total_correct = (
+                session.query(
+                    func.sum(StudySession.cards_practiced),
+                    func.sum(StudySession.correct_answers),
+                ).one()
+            )
+            total_cards_practiced = total_cards_practiced or 0
+            total_correct = total_correct or 0
+            avg_accuracy = (
+                round(total_correct / total_cards_practiced * 100, 2)
+                if total_cards_practiced else 0.0
+            )
 
             return {
                 "total_cards": total,
@@ -191,31 +207,59 @@ class KLARDBManager:
         finally:
             session.close()
 
-    def get_available_databases(self):
-        """Liefert eine Liste der verfügbaren Datenbanken."""
-        return [f"klar_{i}.db" for i in range(1, 6)]
+    def get_available_databases(self) -> list[str]:
+        """Liefert alle *.db-Dateien im Datenverzeichnis."""
+        return sorted([f for f in os.listdir(self.data_dir) if f.endswith(".db")])
 
-    def get_active_database(self):
-        """Liefert den Namen der aktuellen Datenbank."""
-        return "klar_1.db"
+    def get_active_database(self) -> str | None:
+        """Gibt den Namen der aktuell verwendeten Datenbank zurück."""
+        return getattr(self, "active_db", None)
 
-    def set_active_database(self, name):
-        """Setzt die aktive Datenbank."""
-        self.db_path = os.path.join(self.data_dir, name)
+    def set_active_database(self, name: str):
+        """Setzt die angegebene Datenbank als aktiv und initialisiert die Engine neu."""
+        if name not in self.get_available_databases():
+            raise FileNotFoundError(f"Datenbank {name} existiert nicht.")
+
+        # Status persistieren
+        with open(self.active_db_file, "w", encoding="utf-8") as fh:
+            fh.write(name)
+
+        self.active_db = name
+        self.db_path = os.path.join(self.data_dir, self.active_db)
         self.engine = create_engine(f"sqlite:///{self.db_path}", echo=False)
         Base.metadata.create_all(self.engine)
         self.SessionLocal = sessionmaker(bind=self.engine)
 
-    def create_database(self, name, internal):
-        """Erstellt eine neue Datenbank."""
-        new_db_path = os.path.join(self.data_dir, internal + ".db")
+    def create_database(self, display_name: str, internal: str):
+        """Erstellt eine neue Datenbankdatei (internal.db)."""
+        filename = f"{internal}.db"
+        new_db_path = os.path.join(self.data_dir, filename)
+        if os.path.exists(new_db_path):
+            raise FileExistsError(f"Datenbank {filename} existiert bereits.")
+
         new_engine = create_engine(f"sqlite:///{new_db_path}", echo=False)
         Base.metadata.create_all(new_engine)
 
-    def delete_database(self, name):
-        """Löscht eine Datenbank."""
+        # Erste DB? Dann direkt aktivieren
+        if len(self.get_available_databases()) == 1:
+            self.set_active_database(filename)
+
+    def delete_database(self, name: str):
+        """Löscht die angegebene Datenbankdatei und aktualisiert die aktive DB falls nötig."""
         db_path = os.path.join(self.data_dir, name)
+        if not os.path.exists(db_path):
+            raise FileNotFoundError(f"Datenbank {name} existiert nicht.")
+
         os.remove(db_path)
+
+        # War das die aktive? -> neue auswählen bzw. Standard anlegen
+        if name == self.active_db:
+            remaining = self.get_available_databases()
+            if remaining:
+                self.set_active_database(remaining[0])
+            else:
+                # Keine DB mehr vorhanden – Standard-DB neu anlegen
+                self.create_database("Standard", "klar")
 
     # ------------------------------------------------------------------
     # API zum Erfassen von Sessions / Attempts
@@ -357,30 +401,49 @@ class KLARModule(TEACHModule):
 
         # Einfaches Layout: Überschrift + Platzhalter-Buttons
         layout = QVBoxLayout(self)
-        layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
-        layout.setSpacing(20)
+        # Layout gemäß zentraler T.E.A.C.H.-Definition
+        main_app = self.parent()
+        teach_style = getattr(main_app, "LAYOUT_STYLE", None)
+
+        if teach_style:  # Falls vorhanden, Style-Werte übernehmen
+            layout.setAlignment(teach_style.get("alignment", Qt.AlignTop | Qt.AlignHCenter))
+            layout.setSpacing(teach_style.get("spacing", 20))
+            # Innenabstände
+            if "margins" in teach_style:
+                layout.setContentsMargins(*teach_style["margins"])
+        else:
+            # Fallback auf Standardwerte
+            layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+            layout.setSpacing(20)
 
         title_lbl = QLabel("KLAR – Karteikarten")
-        title_lbl.setStyleSheet("font-size: 24px; font-weight: bold;")
+        # Titel-Style an zentrale Vorgabe anlehnen
+        if teach_style and "title_style" in teach_style:
+            title_lbl.setStyleSheet(teach_style["title_style"])
+        else:
+            title_lbl.setStyleSheet("font-size: 24px; font-weight: bold;")
         layout.addWidget(title_lbl)
 
+        # Buttons – zentraler Helper sorgt für einheitliches Design
+        create_btn = getattr(main_app, "create_button", QPushButton)
+
         # Platzhalter-Button „Lernen starten“
-        learn_btn = QPushButton("Lernen starten")
+        learn_btn = create_btn("Lernen starten")
         learn_btn.clicked.connect(self.start_learning)
         layout.addWidget(learn_btn)
 
         # Datenbanken verwalten
-        manage_btn = QPushButton("Datenbanken verwalten")
+        manage_btn = create_btn("Datenbanken verwalten")
         manage_btn.clicked.connect(self.open_db_manager)
         layout.addWidget(manage_btn)
 
         # Karten verwalten
-        card_btn = QPushButton("Karten verwalten")
+        card_btn = create_btn("Karten verwalten")
         card_btn.clicked.connect(self.open_card_manager)
         layout.addWidget(card_btn)
 
         # Statistiken anzeigen
-        stats_btn = QPushButton("Statistiken")
+        stats_btn = create_btn("Statistiken")
         stats_btn.clicked.connect(self.open_stats)
         layout.addWidget(stats_btn)
 
