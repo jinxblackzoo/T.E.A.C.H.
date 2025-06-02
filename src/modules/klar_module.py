@@ -402,7 +402,7 @@ class KLARModule(TEACHModule):
         # Einfaches Layout: Überschrift + Platzhalter-Buttons
         layout = QVBoxLayout(self)
         # Layout gemäß zentraler T.E.A.C.H.-Definition
-        main_app = self.parent()
+        main_app = self.parentWidget()
         teach_style = getattr(main_app, "LAYOUT_STYLE", None)
 
         if teach_style:  # Falls vorhanden, Style-Werte übernehmen
