@@ -33,7 +33,7 @@ from datetime import datetime  # Zeitstempel für Statistiken
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QPushButton, QMessageBox,
     QListWidget, QHBoxLayout, QInputDialog,
-    QLineEdit, QTextEdit, QFileDialog
+    QLineEdit, QTextEdit, QFileDialog, QStackedWidget
 )
 from PySide6.QtCore import Qt  # Layout-Konstanten
 from PySide6.QtGui import QPixmap  # Bilder anzeigen
@@ -393,88 +393,130 @@ class KLARModule(TEACHModule):
     def __init__(self, parent=None):
         """Erstellt Grund-UI und initialisiert interne Strukturen."""
         super().__init__(parent)
-
-        # Modulmetadaten (werden z.B. im Hauptmenü angezeigt)
-        self.name = "KLAR – Karteikarten"
-        self.description = (
-            "Karteikarten Lernen Aber Richtig – integriert in T.E.A.C.H.")
-
-        # Einfaches Layout: Überschrift + Platzhalter-Buttons
-        layout = QVBoxLayout(self)
-        # Layout gemäß zentraler T.E.A.C.H.-Definition
+        # Modulinformationen setzen
+        self.name = "KLAR"
+        self.description = "Karteikartentrainer mit KI-Unterstützung"
+        
+        # Hauptfenster-Referenz für zentrale Styles und Button-Erstellung
         main_app = self.parentWidget()
         teach_style = getattr(main_app, "LAYOUT_STYLE", None)
-
-        if teach_style:  # Falls vorhanden, Style-Werte übernehmen
-            layout.setAlignment(teach_style.get("alignment", Qt.AlignTop | Qt.AlignHCenter))
-            layout.setSpacing(teach_style.get("spacing", 20))
-            # Innenabstände
-            if "margins" in teach_style:
-                layout.setContentsMargins(*teach_style["margins"])
-        else:
-            # Fallback auf Standardwerte
-            layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
-            layout.setSpacing(20)
-
-        title_lbl = QLabel("KLAR – Karteikarten")
-        # Titel-Style an zentrale Vorgabe anlehnen
-        if teach_style and "title_style" in teach_style:
-            title_lbl.setStyleSheet(teach_style["title_style"])
-        else:
-            title_lbl.setStyleSheet("font-size: 24px; font-weight: bold;")
-        layout.addWidget(title_lbl)
-
-        # Buttons – zentraler Helper sorgt für einheitliches Design
+        
+        # Hauptlayout für das Modul
+        main_layout = QVBoxLayout(self)
+        if teach_style:
+            main_layout.setAlignment(teach_style['alignment'])
+            main_layout.setSpacing(teach_style['spacing'])
+            main_layout.setContentsMargins(*teach_style['margins'])
+        
+        # Stacked Widget für verschiedene Ansichten
+        self.stack = QStackedWidget()
+        main_layout.addWidget(self.stack)
+        
+        # Verschiedene Seiten erstellen
+        self._create_main_page()
+        self._create_db_manager_page()
+        self._create_card_manager_page()
+        self._create_learning_page()
+        self._create_stats_page()
+        
+        # Starte mit Hauptseite
+        self.stack.setCurrentWidget(self.main_page)
+    
+    def _create_main_page(self):
+        """Erstellt die Hauptseite des KLAR-Moduls."""
+        self.main_page = QWidget()
+        layout = QVBoxLayout(self.main_page)
+        
+        # Zentrale Button-Erstellung verwenden
+        main_app = self.parentWidget()
         create_btn = getattr(main_app, "create_button", QPushButton)
-
-        # Platzhalter-Button „Lernen starten“
+        
+        # Titel
+        title = QLabel("KLAR - Karteikartentrainer")
+        title.setAlignment(Qt.AlignCenter)
+        if hasattr(main_app, "LAYOUT_STYLE"):
+            title.setStyleSheet(main_app.LAYOUT_STYLE['title_style'])
+        layout.addWidget(title)
+        
+        # Buttons für verschiedene Funktionen
         learn_btn = create_btn("Lernen starten")
-        learn_btn.clicked.connect(self.start_learning)
+        learn_btn.clicked.connect(self._show_learning_page)
         layout.addWidget(learn_btn)
-
-        # Datenbanken verwalten
-        manage_btn = create_btn("Datenbanken verwalten")
-        manage_btn.clicked.connect(self.open_db_manager)
-        layout.addWidget(manage_btn)
-
-        # Karten verwalten
-        card_btn = create_btn("Karten verwalten")
-        card_btn.clicked.connect(self.open_card_manager)
-        layout.addWidget(card_btn)
-
-        # Statistiken anzeigen
+        
+        db_btn = create_btn("Datenbanken verwalten")
+        db_btn.clicked.connect(self._show_db_manager_page)
+        layout.addWidget(db_btn)
+        
+        cards_btn = create_btn("Karten verwalten")
+        cards_btn.clicked.connect(self._show_card_manager_page)
+        layout.addWidget(cards_btn)
+        
         stats_btn = create_btn("Statistiken")
-        stats_btn.clicked.connect(self.open_stats)
+        stats_btn.clicked.connect(self._show_stats_page)
         layout.addWidget(stats_btn)
-
-        layout.addStretch(1)  # Restliche Fläche auffüllen
-
-    # ---------------------------------------------------------------------
-    # Lernmodus
-    # ---------------------------------------------------------------------
+    
+    def _create_db_manager_page(self):
+        """Erstellt die Datenbankverwaltungsseite."""
+        self.db_manager_page = DatabaseManagerWidget(self)
+        self.stack.addWidget(self.db_manager_page)
+    
+    def _create_card_manager_page(self):
+        """Erstellt die Kartenverwaltungsseite."""
+        self.card_manager_page = FlashcardManagerWidget(self)
+        self.stack.addWidget(self.card_manager_page)
+    
+    def _create_learning_page(self):
+        """Erstellt die Lernseite."""
+        self.learning_page = LearningWidget(self)
+        self.stack.addWidget(self.learning_page)
+    
+    def _create_stats_page(self):
+        """Erstellt die Statistikseite."""
+        self.stats_page = StatsWidget(self)
+        self.stack.addWidget(self.stats_page)
+    
+    def _show_db_manager_page(self):
+        """Zeigt die Datenbankverwaltungsseite."""
+        self.stack.setCurrentWidget(self.db_manager_page)
+        self.db_manager_page.refresh()
+    
+    def _show_card_manager_page(self):
+        """Zeigt die Kartenverwaltungsseite."""
+        self.stack.setCurrentWidget(self.card_manager_page)
+        self.card_manager_page.refresh()
+    
+    def _show_learning_page(self):
+        """Zeigt die Lernseite."""
+        self.stack.setCurrentWidget(self.learning_page)
+    
+    def _show_stats_page(self):
+        """Zeigt die Statistikseite."""
+        self.stack.setCurrentWidget(self.stats_page)
+        self.stats_page.refresh()
+    
+    def show_main_page(self):
+        """Kehrt zur Hauptseite zurück."""
+        self.stack.setCurrentWidget(self.main_page)
+    
     def start_learning(self):
-        """Startet eine Lernsession im Dialog."""
-        # Entferne Dialog und verwende Widget direkt im Hauptfenster
-        pass  # TODO: Implementierung für Widget-basierte Lernsession
+        """Startet eine Lernsession."""
+        self._show_learning_page()
 
     # ---------------------------------------------------------------------
-    # Datenbankverwaltung – Dialog öffnen
+    # Datenbankverwaltung
     # ---------------------------------------------------------------------
     def open_db_manager(self):
-        """Öffnet den Dialog zum Verwalten der Karteikarten-Datenbanken."""
-        # Entferne Dialog und verwende Widget direkt im Hauptfenster
-        pass  # TODO: Implementierung für Widget-basierte Datenbankverwaltung
+        """Öffnet die Datenbankverwaltung."""
+        self._show_db_manager_page()
 
     def open_card_manager(self):
-        """Öffnet den Karteneditor-Dialog."""
-        # Entferne Dialog und verwende Widget direkt im Hauptfenster
-        pass  # TODO: Implementierung für Widget-basierte Kartenverwaltung
+        """Öffnet die Kartenverwaltung."""
+        self._show_card_manager_page()
 
     def open_stats(self):
-        """Öffnet Statistik-Dialog."""
-        # Entferne Dialog und verwende Widget direkt im Hauptfenster
-        pass  # TODO: Implementierung für Widget-basierte Statistiken
-
+        """Öffnet die Statistiken."""
+        self._show_stats_page()
+    
     # -----------------------------------------------------------------
     # Reporting-Schnittstelle
     # -----------------------------------------------------------------
@@ -514,42 +556,54 @@ class KLARModule(TEACHModule):
 
 
 # ---------------------------------------------------------------------------
-# Dialogklasse für Datenbankverwaltung
+# Datenbankverwaltungs-Widget
 # ---------------------------------------------------------------------------
-class DatabaseManagerDialog(QWidget):
-    """UI-Dialog zum Anlegen, Auswählen und Löschen von DBs."""
+class DatabaseManagerWidget(QWidget):
+    """Widget zum Verwalten von Datenbanken."""
 
     def __init__(self, parent: KLARModule):
         super().__init__(parent)
-        self.setWindowTitle("Datenbanken verwalten")
-        self.resize(400, 300)
-
-        self.parent_mod: KLARModule = parent
+        self.parent_mod = parent
 
         # Hauptlayout
         vbox = QVBoxLayout(self)
+        
+        # Titel
+        title = QLabel("Datenbanken verwalten")
+        title.setAlignment(Qt.AlignCenter)
+        if hasattr(parent.parentWidget(), "LAYOUT_STYLE"):
+            title.setStyleSheet(parent.parentWidget().LAYOUT_STYLE['title_style'])
+        vbox.addWidget(title)
 
-        # Liste der vorhandenen Datenbanken
-        self.list_widget = QListWidget()
-        vbox.addWidget(self.list_widget)
+        # Liste der verfügbaren Datenbanken
+        self.db_list = QListWidget()
+        vbox.addWidget(self.db_list)
 
         # Buttons
-        btn_row = QHBoxLayout()
-        vbox.addLayout(btn_row)
+        btn_layout = QHBoxLayout()
+        
+        # Zentrale Button-Erstellung verwenden
+        create_btn = getattr(parent.parentWidget(), "create_button", QPushButton)
+        
+        new_btn = create_btn("Neue DB")
+        new_btn.clicked.connect(self._create_db)
+        btn_layout.addWidget(new_btn)
 
-        self.btn_set_active = QPushButton("Aktiv setzen")
-        self.btn_new = QPushButton("Neu …")
-        self.btn_delete = QPushButton("Löschen")
-        btn_row.addWidget(self.btn_set_active)
-        btn_row.addWidget(self.btn_new)
-        btn_row.addWidget(self.btn_delete)
+        select_btn = create_btn("Auswählen")
+        select_btn.clicked.connect(self._select_db)
+        btn_layout.addWidget(select_btn)
 
-        # Signale
-        self.btn_set_active.clicked.connect(self._set_active)
-        self.btn_new.clicked.connect(self._create_new)
-        self.btn_delete.clicked.connect(self._delete)
+        delete_btn = create_btn("Löschen")
+        delete_btn.clicked.connect(self._delete_db)
+        btn_layout.addWidget(delete_btn)
 
-        # Liste initial füllen
+        vbox.addLayout(btn_layout)
+        
+        # Zurück-Button
+        back_btn = create_btn("← Zurück", "back")
+        back_btn.clicked.connect(self.parent_mod.show_main_page)
+        vbox.addWidget(back_btn)
+
         self._refresh_list()
 
     # -----------------------------------------------------------------
@@ -557,18 +611,18 @@ class DatabaseManagerDialog(QWidget):
     # -----------------------------------------------------------------
     def _refresh_list(self):
         """Aktualisiert die Anzeige der Datenbanken."""
-        self.list_widget.clear()
+        self.db_list.clear()
         for db_name in _db_mgr.get_available_databases():
-            self.list_widget.addItem(db_name)
+            self.db_list.addItem(db_name)
         # Aktive DB selektieren
         active = _db_mgr.get_active_database()
         if active:
-            items = self.list_widget.findItems(active, Qt.MatchExactly)
+            items = self.db_list.findItems(active, Qt.MatchExactly)
             if items:
-                self.list_widget.setCurrentItem(items[0])
+                self.db_list.setCurrentItem(items[0])
 
-    def _set_active(self):
-        item = self.list_widget.currentItem()
+    def _select_db(self):
+        item = self.db_list.currentItem()
         if not item:
             QMessageBox.warning(self, "Keine Auswahl", "Bitte eine Datenbank wählen.")
             return
@@ -579,7 +633,7 @@ class DatabaseManagerDialog(QWidget):
         except Exception as exc:
             QMessageBox.critical(self, "Fehler", str(exc))
 
-    def _create_new(self):
+    def _create_db(self):
         name, ok = QInputDialog.getText(self, "Neue Datenbank", "Name der Datenbank:")
         if not ok or not name:
             return
@@ -591,8 +645,8 @@ class DatabaseManagerDialog(QWidget):
         except Exception as exc:
             QMessageBox.critical(self, "Fehler", str(exc))
 
-    def _delete(self):
-        item = self.list_widget.currentItem()
+    def _delete_db(self):
+        item = self.db_list.currentItem()
         if not item:
             QMessageBox.warning(self, "Keine Auswahl", "Bitte eine Datenbank wählen.")
             return
@@ -604,72 +658,77 @@ class DatabaseManagerDialog(QWidget):
             except Exception as exc:
                 QMessageBox.critical(self, "Fehler", str(exc))
 
-    # ---------------------------------------------------------------------
-    # TEACHModule-Schnittstellen
-    # ---------------------------------------------------------------------
-    def on_activate(self):
-        """Wird beim Aktivieren des Moduls aufgerufen (derzeit keine Aktion)."""
-        pass
-
-    def on_deactivate(self):
-        """Wird beim Deaktivieren des Moduls aufgerufen (derzeit keine Aktion)."""
-        pass
-
-    # ---------------------------------------------------------------------
-    # KI-Schnittstelle-Methode wurde in KLARModule implementiert.
-    # ---------------------------------------------------------------------
+    def refresh(self):
+        """Aktualisiert die Datenbankliste."""
+        self._refresh_list()
 
 
 # ---------------------------------------------------------------------------
-# Dialogklasse für Kartenverwaltung
+# Kartenverwaltungs-Widget
 # ---------------------------------------------------------------------------
-class FlashcardManagerDialog(QWidget):
-    """Dialog zum Anlegen, Bearbeiten und Löschen von Flashcards."""
+class FlashcardManagerWidget(QWidget):
+    """Widget zum Verwalten von Karten."""
 
     def __init__(self, parent: KLARModule):
         super().__init__(parent)
-        self.setWindowTitle("Karten verwalten")
-        self.resize(500, 400)
-
-        self.parent_mod: KLARModule = parent
+        self.parent_mod = parent
 
         vbox = QVBoxLayout(self)
+        
+        # Titel
+        title = QLabel("Karten verwalten")
+        title.setAlignment(Qt.AlignCenter)
+        if hasattr(parent.parentWidget(), "LAYOUT_STYLE"):
+            title.setStyleSheet(parent.parentWidget().LAYOUT_STYLE['title_style'])
+        vbox.addWidget(title)
 
-        self.list_widget = QListWidget()
-        vbox.addWidget(self.list_widget)
+        # Liste der Karten
+        self.card_list = QListWidget()
+        vbox.addWidget(self.card_list)
 
-        btn_row = QHBoxLayout()
-        vbox.addLayout(btn_row)
+        # Buttons
+        btn_layout = QHBoxLayout()
+        
+        # Zentrale Button-Erstellung verwenden
+        create_btn = getattr(parent.parentWidget(), "create_button", QPushButton)
+        
+        add_btn = create_btn("Hinzufügen")
+        add_btn.clicked.connect(self._add)
+        btn_layout.addWidget(add_btn)
 
-        self.btn_add = QPushButton("Neu …")
-        self.btn_edit = QPushButton("Bearbeiten …")
-        self.btn_delete = QPushButton("Löschen")
-        btn_row.addWidget(self.btn_add)
-        btn_row.addWidget(self.btn_edit)
-        btn_row.addWidget(self.btn_delete)
+        edit_btn = create_btn("Bearbeiten")
+        edit_btn.clicked.connect(self._edit)
+        btn_layout.addWidget(edit_btn)
 
-        self.btn_add.clicked.connect(self._add)
-        self.btn_edit.clicked.connect(self._edit)
-        self.btn_delete.clicked.connect(self._delete)
+        delete_btn = create_btn("Löschen")
+        delete_btn.clicked.connect(self._delete)
+        btn_layout.addWidget(delete_btn)
+
+        vbox.addLayout(btn_layout)
+        
+        # Zurück-Button
+        back_btn = create_btn("← Zurück", "back")
+        back_btn.clicked.connect(self.parent_mod.show_main_page)
+        vbox.addWidget(back_btn)
 
         self._refresh()
 
     # ----------------------------- Helper ---------------------------------
     def _refresh(self):
-        self.list_widget.clear()
+        self.card_list.clear()
         self.cards = _db_mgr.list_flashcards()
         for card in self.cards:
-            self.list_widget.addItem(f"{card.id}: {card.question}")
+            self.card_list.addItem(f"{card.id}: {card.question}")
 
     def _get_current_card(self):
-        idx = self.list_widget.currentRow()
+        idx = self.card_list.currentRow()
         if idx < 0:
             return None
         return self.cards[idx]
 
     # --------------------------- Slots -----------------------------------
     def _add(self):
-        self.editor = FlashcardEditorDialog(self)
+        self.editor = FlashcardEditorWidget(self)
         self.editor.show()
 
     def _edit(self):
@@ -677,7 +736,7 @@ class FlashcardManagerDialog(QWidget):
         if not card:
             QMessageBox.warning(self, "Keine Auswahl", "Bitte eine Karte wählen.")
             return
-        self.editor = FlashcardEditorDialog(self, card)
+        self.editor = FlashcardEditorWidget(self, card)
         self.editor.show()
 
     def _delete(self):
@@ -690,52 +749,60 @@ class FlashcardManagerDialog(QWidget):
             _db_mgr.delete_flashcard(card)
             self._refresh()
 
+    def refresh(self):
+        """Aktualisiert die Kartenliste."""
+        self._refresh()
+
 
 # ---------------------------------------------------------------------------
-# Dialog zum Bearbeiten einer einzelnen Karte
+# Kartenbearbeitungs-Widget
 # ---------------------------------------------------------------------------
-class FlashcardEditorDialog(QWidget):
-    """Dialog zum Hinzufügen oder Bearbeiten einer Karte."""
+class FlashcardEditorWidget(QWidget):
+    """Widget zum Bearbeiten einer Karte."""
 
     def __init__(self, parent: QWidget, card: Flashcard | None = None):
         super().__init__(parent)
-        self.setWindowTitle("Karte bearbeiten" if card else "Neue Karte")
-        self.resize(500, 400)
-
         self.card = card
 
         vbox = QVBoxLayout(self)
+        
+        # Titel
+        title = QLabel("Karte bearbeiten" if card else "Neue Karte")
+        title.setAlignment(Qt.AlignCenter)
+        vbox.addWidget(title)
 
+        # Frage
+        vbox.addWidget(QLabel("Frage:"))
         self.question_edit = QLineEdit()
-        self.question_edit.setPlaceholderText("Frage")
         vbox.addWidget(self.question_edit)
 
+        # Antwort
+        vbox.addWidget(QLabel("Antwort:"))
         self.answer_edit = QTextEdit()
-        self.answer_edit.setPlaceholderText("Antwort")
         vbox.addWidget(self.answer_edit)
 
+        # Keywords
+        vbox.addWidget(QLabel("Stichwörter (kommagetrennt):"))
         self.keyword_edit = QLineEdit()
-        self.keyword_edit.setPlaceholderText("Keywords (Komma getrennt)")
         vbox.addWidget(self.keyword_edit)
 
-        img_row = QHBoxLayout()
-        vbox.addLayout(img_row)
+        # Bildpfad
+        vbox.addWidget(QLabel("Bildpfad (optional):"))
+        img_layout = QHBoxLayout()
         self.image_path_edit = QLineEdit()
-        self.image_path_edit.setPlaceholderText("Bildpfad (optional)")
-        img_row.addWidget(self.image_path_edit)
-        browse_btn = QPushButton("Durchsuchen …")
-        img_row.addWidget(browse_btn)
+        img_layout.addWidget(self.image_path_edit)
+        browse_btn = QPushButton("Durchsuchen")
+        browse_btn.clicked.connect(self._browse_image)
+        img_layout.addWidget(browse_btn)
+        vbox.addLayout(img_layout)
 
-        browse_btn.clicked.connect(self._browse)
-
-        # Buttons OK / Abbrechen
+        # Buttons
         btn_row = QHBoxLayout()
-        vbox.addLayout(btn_row)
-        ok_btn = QPushButton("OK")
+        ok_btn = QPushButton("Speichern")
         cancel_btn = QPushButton("Abbrechen")
-        btn_row.addStretch(1)
         btn_row.addWidget(ok_btn)
         btn_row.addWidget(cancel_btn)
+        vbox.addLayout(btn_row)
 
         ok_btn.clicked.connect(self._save)
         cancel_btn.clicked.connect(self.close)
@@ -744,12 +811,17 @@ class FlashcardEditorDialog(QWidget):
         if card:
             self.question_edit.setText(card.question)
             self.answer_edit.setPlainText(card.answer)
-            self.keyword_edit.setText(", ".join(card.keyword_list))
-            if card.image_path:
-                self.image_path_edit.setText(card.image_path)
+            keywords = json.loads(card.keywords) if card.keywords else []
+            self.keyword_edit.setText(", ".join(keywords))
+            self.image_path_edit.setText(card.image_path or "")
+
+        # Zurück-Button
+        back_btn = QPushButton("← Zurück")
+        back_btn.clicked.connect(self.close)
+        vbox.addWidget(back_btn)
 
     # --------------------------- Helper -----------------------------------
-    def _browse(self):
+    def _browse_image(self):
         file, _ = QFileDialog.getOpenFileName(self, "Bild auswählen", "", "Bilder (*.png *.jpg *.jpeg *.gif)")
         if file:
             self.image_path_edit.setText(file)
@@ -764,169 +836,214 @@ class FlashcardEditorDialog(QWidget):
 
 
 # ---------------------------------------------------------------------------
-# Dialog für Lernmodus
+# Lern-Widget
 # ---------------------------------------------------------------------------
-class LearningDialog(QWidget):
-    """Einfacher Lern-Dialog mit Level-Logik."""
+class LearningWidget(QWidget):
+    """Lern-Widget mit Level-Logik."""
 
     def __init__(self, parent: KLARModule):
         super().__init__(parent)
-        self.setWindowTitle("Lernmodus")
-        self.resize(600, 400)
-
         self.parent_mod = parent
 
         # Karten vorbereiten (alle noch nicht gemeisterten)
-        self.cards = [c for c in _db_mgr.list_flashcards() if c.level < 4]
+        self.cards = _db_mgr.get_cards_for_learning()
         if not self.cards:
-            QMessageBox.information(self, "Nichts zu lernen", "Es gibt keine fälligen Karten.")
-            self.close()
+            QMessageBox.information(self, "Keine Karten", "Keine Karten zum Lernen verfügbar.")
             return
+
         random.shuffle(self.cards)
-        self.current_idx = -1
+        self.current_index = 0
         self.correct_count = 0
+        self.session_start = time.time()
 
-        self.start_time = time.time()
-
-        # UI aufbauen
         vbox = QVBoxLayout(self)
+        
+        # Titel
+        title = QLabel("Lernmodus")
+        title.setAlignment(Qt.AlignCenter)
+        if hasattr(parent.parentWidget(), "LAYOUT_STYLE"):
+            title.setStyleSheet(parent.parentWidget().LAYOUT_STYLE['title_style'])
+        vbox.addWidget(title)
 
-        self.question_lbl = QLabel()
-        self.question_lbl.setWordWrap(True)
-        self.question_lbl.setStyleSheet("font-size:18px;font-weight:bold;")
-        vbox.addWidget(self.question_lbl)
+        # Fortschritt
+        self.progress_label = QLabel()
+        vbox.addWidget(self.progress_label)
 
-        self.image_lbl = QLabel()
-        self.image_lbl.setAlignment(Qt.AlignCenter)
-        vbox.addWidget(self.image_lbl)
+        # Frage
+        self.question_label = QLabel()
+        self.question_label.setWordWrap(True)
+        vbox.addWidget(self.question_label)
 
-        self.answer_lbl = QLabel()
-        self.answer_lbl.setWordWrap(True)
-        self.answer_lbl.setVisible(False)
-        vbox.addWidget(self.answer_lbl)
+        # Antwort (zunächst versteckt)
+        self.answer_label = QLabel()
+        self.answer_label.setWordWrap(True)
+        self.answer_label.hide()
+        vbox.addWidget(self.answer_label)
 
-        btn_row = QHBoxLayout()
-        vbox.addLayout(btn_row)
+        # Buttons
+        btn_layout = QHBoxLayout()
+        
+        # Zentrale Button-Erstellung verwenden
+        create_btn = getattr(parent.parentWidget(), "create_button", QPushButton)
+        
+        self.show_answer_btn = create_btn("Antwort zeigen")
+        self.show_answer_btn.clicked.connect(self._show_answer)
+        btn_layout.addWidget(self.show_answer_btn)
 
-        self.reveal_btn = QPushButton("Antwort anzeigen")
-        self.correct_btn = QPushButton("Richtig ✅")
-        self.wrong_btn = QPushButton("Falsch ❌")
-
-        btn_row.addWidget(self.reveal_btn)
-        btn_row.addWidget(self.correct_btn)
-        btn_row.addWidget(self.wrong_btn)
-
-        self.correct_btn.setVisible(False)
-        self.wrong_btn.setVisible(False)
-
-        self.reveal_btn.clicked.connect(self._reveal)
-        self.correct_btn.clicked.connect(lambda: self._answer(True))
-        self.wrong_btn.clicked.connect(lambda: self._answer(False))
-
-        # Tipp-Button
-        self.hint_btn = QPushButton("Tipp 💡")
-        btn_row.addWidget(self.hint_btn)
+        self.hint_btn = create_btn("Tipp")
         self.hint_btn.clicked.connect(self._show_hint)
+        self.hint_btn.setEnabled(False)
+        btn_layout.addWidget(self.hint_btn)
 
-        # Label für KI-Hinweis
-        self.hint_lbl = QLabel()
-        self.hint_lbl.setWordWrap(True)
-        self.hint_lbl.setStyleSheet("font-style: italic; color: #555;")
-        self.hint_lbl.setVisible(False)
-        vbox.addWidget(self.hint_lbl)
+        vbox.addLayout(btn_layout)
 
-        # Erste Karte anzeigen
-        self._next_card()
+        # Bewertungsbuttons (zunächst versteckt)
+        self.rating_layout = QHBoxLayout()
+        self.correct_btn = create_btn("Richtig")
+        self.correct_btn.clicked.connect(lambda: self._rate_answer(True))
+        self.rating_layout.addWidget(self.correct_btn)
 
-    # ----------------------------- Ablauf ---------------------------------
-    def _next_card(self):
-        self.current_idx += 1
-        if self.current_idx >= len(self.cards):
-            self._finish()
+        self.wrong_btn = create_btn("Falsch")
+        self.wrong_btn.clicked.connect(lambda: self._rate_answer(False))
+        self.rating_layout.addWidget(self.wrong_btn)
+
+        vbox.addLayout(self.rating_layout)
+        self._hide_rating_buttons()
+        
+        # Zurück-Button
+        back_btn = create_btn("← Zurück", "back")
+        back_btn.clicked.connect(self.parent_mod.show_main_page)
+        vbox.addWidget(back_btn)
+
+        self._show_current_card()
+
+    def _show_current_card(self):
+        """Zeigt die aktuelle Karte an."""
+        if self.current_index >= len(self.cards):
+            self._finish_session()
             return
-        card = self.cards[self.current_idx]
-
-        self.question_lbl.setText(card.question)
-        self.answer_lbl.setText(card.answer)
-        self.answer_lbl.setVisible(False)
-        self.reveal_btn.setVisible(True)
-        self.correct_btn.setVisible(False)
-        self.wrong_btn.setVisible(False)
-        self.hint_lbl.clear()
-        self.hint_lbl.setVisible(False)
+            
+        card = self.cards[self.current_index]
+        self.progress_label.setText(f"Karte {self.current_index + 1} von {len(self.cards)}")
+        self.question_label.setText(card.question)
+        self.answer_label.setText(card.answer)
+        self.answer_label.hide()
+        self.show_answer_btn.show()
+        self._hide_rating_buttons()
         self.hint_btn.setEnabled(True)
 
-        # Bild
-        if card.image_path and os.path.exists(card.image_path):
-            pix = QPixmap(card.image_path)
-            self.image_lbl.setPixmap(pix.scaledToWidth(300, Qt.SmoothTransformation))
-            self.image_lbl.setVisible(True)
-        else:
-            self.image_lbl.clear()
-            self.image_lbl.setVisible(False)
+    def _show_answer(self):
+        """Zeigt die Antwort zur aktuellen Karte."""
+        self.answer_label.show()
+        self.show_answer_btn.hide()
+        self._show_rating_buttons()
 
-        # Tipp-Button erst nach 1 Sek. aktivieren, um versehentliches Klicken zu vermeiden
-        from PySide6.QtCore import QTimer
-        QTimer.singleShot(1000, lambda: self.hint_btn.setEnabled(True))
+    def _show_rating_buttons(self):
+        """Zeigt die Bewertungsbuttons."""
+        self.correct_btn.show()
+        self.wrong_btn.show()
 
-    def _reveal(self):
-        self.answer_lbl.setVisible(True)
-        self.reveal_btn.setVisible(False)
-        self.correct_btn.setVisible(True)
-        self.wrong_btn.setVisible(True)
+    def _hide_rating_buttons(self):
+        """Versteckt die Bewertungsbuttons."""
+        self.correct_btn.hide()
+        self.wrong_btn.hide()
 
-    def _answer(self, correct: bool):
-        card = self.cards[self.current_idx]
-        level_before = card.level
-        _db_mgr.update_learning_result(card.id, correct, level_before)
+    def _rate_answer(self, correct: bool):
+        """Bewertet die Antwort und geht zur nächsten Karte."""
+        card = self.cards[self.current_index]
         if correct:
             self.correct_count += 1
-        self._next_card()
-
-    def _finish(self):
-        duration = time.time() - self.start_time
-        _db_mgr.add_study_session(duration, len(self.cards), self.correct_count)
-        QMessageBox.information(
-            self,
-            "Fertig",
-            f"Session beendet. Richtig: {self.correct_count}/{len(self.cards)}")
-        self.close()
+            card.level = min(card.level + 1, 4)
+        else:
+            card.level = max(card.level - 1, 0)
+        
+        # Karte in Datenbank aktualisieren
+        _db_mgr.update_learning_result(card.id, correct, card.level)
+        
+        self.current_index += 1
+        self._show_current_card()
 
     def _show_hint(self):
-        """Fragt das LLM nach einem Tipp für die aktuelle Frage."""
-        card = self.cards[self.current_idx]
-        self.hint_btn.setEnabled(False)
-        hint = self.parent_mod.generate_ai_hint(card.question)
-        self.hint_lbl.setText(hint)
-        self.hint_lbl.setVisible(True)
+        """Zeigt einen Tipp zur aktuellen Karte."""
+        card = self.cards[self.current_index]
+        if hasattr(card, 'keywords') and card.keywords:
+            try:
+                keywords = json.loads(card.keywords) if isinstance(card.keywords, str) else card.keywords
+                if keywords:
+                    hint_text = f"Tipp: {', '.join(keywords[:2])}"
+                    QMessageBox.information(self, "Tipp", hint_text)
+                else:
+                    QMessageBox.information(self, "Tipp", "Keine Hinweise verfügbar.")
+            except:
+                QMessageBox.information(self, "Tipp", "Keine Hinweise verfügbar.")
+        else:
+            QMessageBox.information(self, "Tipp", "Keine Hinweise verfügbar.")
+
+    def _finish_session(self):
+        """Beendet die Lernsession."""
+        duration = time.time() - self.session_start
+        accuracy = (self.correct_count / len(self.cards)) * 100 if self.cards else 0
+        
+        # Session in Datenbank speichern
+        _db_mgr.save_learning_session(len(self.cards), self.correct_count, duration)
+        
+        QMessageBox.information(
+            self, 
+            "Session beendet", 
+            f"Du hast {self.correct_count} von {len(self.cards)} Karten richtig beantwortet.\n"
+            f"Genauigkeit: {accuracy:.1f}%\n"
+            f"Dauer: {int(duration)} Sekunden"
+        )
+        
+        self.parent_mod.show_main_page()
 
 
 # ---------------------------------------------------------------------------
-# Dialog für Statistiken
+# Statistik-Widget
 # ---------------------------------------------------------------------------
-class StatsDialog(QWidget):
-    """Zeigt aggregierte Lernstatistiken und Historie."""
+class StatsWidget(QWidget):
+    """Widget für Statistiken."""
 
     def __init__(self, parent: KLARModule):
         super().__init__(parent)
-        self.setWindowTitle("Statistiken")
-        self.resize(500, 400)
-
+        self.parent_mod = parent
+        
         vbox = QVBoxLayout(self)
+        
+        # Titel
+        title = QLabel("Statistiken")
+        title.setAlignment(Qt.AlignCenter)
+        if hasattr(parent.parentWidget(), "LAYOUT_STYLE"):
+            title.setStyleSheet(parent.parentWidget().LAYOUT_STYLE['title_style'])
+        vbox.addWidget(title)
 
-        stats = _db_mgr.get_stats()
-        vbox.addWidget(QLabel(f"Karten insgesamt: {stats['total_cards']}"))
-        vbox.addWidget(QLabel(f"Gemeistert (Level 4): {stats['mastered']}"))
-        vbox.addWidget(QLabel(f"In Bearbeitung: {stats['in_progress']}"))
-        vbox.addWidget(QLabel(f"Meisterungsrate: {stats['mastery_rate']} %"))
-        vbox.addWidget(QLabel(f"Anzahl der Lern-Sessions: {stats['sessions']}"))
-        vbox.addWidget(QLabel(f"Letzte Lern-Session: {stats['last_session']}"))
-        vbox.addWidget(QLabel(f"Durchschnittliche Genauigkeit: {stats['avg_accuracy']} %"))
+        # Statistiken anzeigen
+        self.stats_label = QLabel()
+        vbox.addWidget(self.stats_label)
 
-        vbox.addWidget(QLabel("Letzte Lern-Sessions:"))
+        vbox.addWidget(QLabel("Letzte Sessions:"))
         self.list_widget = QListWidget()
         vbox.addWidget(self.list_widget)
+        
+        # Zurück-Button
+        create_btn = getattr(parent.parentWidget(), "create_button", QPushButton)
+        back_btn = create_btn("← Zurück", "back")
+        back_btn.clicked.connect(self.parent_mod.show_main_page)
+        vbox.addWidget(back_btn)
 
+        self._load_stats()
+
+    def _load_stats(self):
+        """Lädt und zeigt die Statistiken."""
+        stats = _db_mgr.get_stats()
+        stats_text = f"Karten gesamt: {stats.get('total_cards', 0)}\n"
+        stats_text += f"Gemeisterte Karten: {stats.get('mastered_cards', 0)}\n"
+        stats_text += f"Lernsessions: {stats.get('total_sessions', 0)}"
+        
+        self.stats_label.setText(stats_text)
+
+        # Sessions laden
+        self.list_widget.clear()
         for sess in _db_mgr.list_recent_sessions():
             duration = int(sess.duration) if sess.duration else 0
             self.list_widget.addItem(
@@ -934,6 +1051,10 @@ class StatsDialog(QWidget):
                 f"{sess.correct_answers}/{sess.cards_practiced} richtig, "
                 f"{duration}s"
             )
+
+    def refresh(self):
+        """Aktualisiert die Statistiken."""
+        self._load_stats()
 
 
 # ---------------------------------------------------------------------------
