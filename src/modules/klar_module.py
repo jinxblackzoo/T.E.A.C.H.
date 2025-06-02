@@ -154,8 +154,37 @@ class KLARDBManager:
 
         # Engine & SessionFactory anlegen/aktualisieren
         self.engine = create_engine(f"sqlite:///{self.db_path}", echo=False)
+        
+        # Erst Tabellen erstellen, dann Migration ausführen
         Base.metadata.create_all(self.engine)
+        self._migrate_database()
+        
         self.SessionLocal = sessionmaker(bind=self.engine)
+
+    def _migrate_database(self):
+        """Führt notwendige Datenbank-Migrationen durch."""
+        try:
+            # Prüfe, ob image_path Spalte in flashcards Tabelle existiert
+            with self.engine.connect() as conn:
+                # Hole Tabellen-Info
+                result = conn.execute("PRAGMA table_info(flashcards)")
+                columns = [row[1] for row in result.fetchall()]
+                
+                # Füge fehlende Spalten hinzu
+                if 'image_path' not in columns:
+                    conn.execute("ALTER TABLE flashcards ADD COLUMN image_path TEXT")
+                    conn.commit()
+                    print("Migration: image_path Spalte zur flashcards Tabelle hinzugefügt")
+                
+                # Weitere Migrationen können hier hinzugefügt werden
+                if 'last_practiced' not in columns:
+                    conn.execute("ALTER TABLE flashcards ADD COLUMN last_practiced DATETIME")
+                    conn.commit()
+                    print("Migration: last_practiced Spalte zur flashcards Tabelle hinzugefügt")
+                    
+        except Exception as e:
+            print(f"Warnung: Migration fehlgeschlagen: {e}")
+            # Migration-Fehler nicht kritisch - Anwendung kann trotzdem starten
 
     # ---------------------------------------------------------------------
     # API-Methoden
@@ -374,6 +403,14 @@ class KLARDBManager:
                 .limit(limit)
                 .all()
             )
+        finally:
+            sess.close()
+
+    def get_cards_for_learning(self):
+        """Gibt alle Karten zurück, die noch nicht gemeistert sind (Level < 4)."""
+        sess = self.get_session()
+        try:
+            return sess.query(Flashcard).filter(Flashcard.level < 4).all()
         finally:
             sess.close()
 
@@ -985,7 +1022,7 @@ class LearningWidget(QWidget):
         accuracy = (self.correct_count / len(self.cards)) * 100 if self.cards else 0
         
         # Session in Datenbank speichern
-        _db_mgr.save_learning_session(len(self.cards), self.correct_count, duration)
+        _db_mgr.add_study_session(duration, len(self.cards), self.correct_count)
         
         QMessageBox.information(
             self, 
