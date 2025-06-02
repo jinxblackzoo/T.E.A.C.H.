@@ -397,7 +397,7 @@ class KLARModule(TEACHModule):
         # Modulmetadaten (werden z.B. im Hauptmenü angezeigt)
         self.name = "KLAR – Karteikarten"
         self.description = (
-            "Kinderfreundliches Karteikarten-Tool – integriert in T.E.A.C.H.")
+            "Karteikarten Lernen Aber Richtig – integriert in T.E.A.C.H.")
 
         # Einfaches Layout: Überschrift + Platzhalter-Buttons
         layout = QVBoxLayout(self)
@@ -948,6 +948,20 @@ class StatsDialog(QDialog):
 # ---------------------------------------------------------------------------
 
 def register(app_window):
-    """Erzeugt eine Instanz von KLARModule und meldet sie bei TEACH an."""
+    """Erzeugt eine Instanz von KLARModule, meldet sie bei TEACH an und bettet das Widget in die KLAR-Seite ein."""
     module = KLARModule(parent=app_window)
     app_window.register_module(module)
+    # Das KLARModule-Widget als Attribut speichern (optional, für späteren Zugriff)
+    app_window.klar_modul_widget = module
+    # In die KLAR-Seite einbetten
+    # Annahme: klar_page enthält ein Layout mit mindestens einem Container (siehe app.py)
+    # Wir suchen das zentrale Layout und fügen das Widget hinzu
+    # (Das Widget wird nach dem Label und vor dem Zurück-Button eingefügt)
+    for i in range(app_window.klar_page.layout().count()):
+        item = app_window.klar_page.layout().itemAt(i)
+        container = item.widget() if item else None
+        # Wir suchen das zentrale Widget, das das Layout für KLAR enthält
+        if container and isinstance(container, QWidget) and container.layout():
+            # Das eigentliche Modul-Widget einfügen
+            container.layout().insertWidget(1, module)  # Nach dem Label, vor dem Back-Button
+            break
